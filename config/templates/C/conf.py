@@ -11,70 +11,69 @@
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #
-import os
-import sys
-sys.path.insert(0, os.path.abspath('../../../src'))
-
-# -- Project information -----------------------------------------------------
-
 project = 'Project_Name'
 copyright = '2023, Jonathan A. Webb'
 author = 'Jonathan A. Webb'
-
-# The full version, including alpha/beta/rc tags
-release = '0.1.0'
-
+release = '0.0.1'
 
 # -- General configuration ---------------------------------------------------
 
-# Add any Sphinx extension module names here, as strings. They can be
-# extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
-# ones.
 extensions = [
     "sphinx.ext.todo",
     "sphinx.ext.viewcode",
     "sphinx.ext.autodoc",
     "sphinx.ext.autosummary",
     "sphinx.ext.githubpages",
+    "sphinx_copybutton",
     "breathe",
 ]
 
-autodoc_member_order = "groupwise"
-autodoc_default_flags = ["members", "show-inheritance"]
-autosummary_generate = True
-
-# Breathe Configuration
-breathe_default_project = "c_libs"
-breathe_domain_by_extension = {"h" : "c", "c" : "c"}
-
-# This is the folder where Doxygen XML output goes, relative to conf.py
-breathe_projects = { "c_libs": "../doxygen_docs/xml/" }
-#autodoc_member_order = "groupwise"
-#autodoc_default_flags = ["members", "show-inheritance"]
-#autosummary_generate = True
-
-# Add any paths that contain templates here, relative to this directory.
 templates_path = ["_templates"]
-
-# List of patterns, relative to source directory, that match files and
-# directories to ignore when looking for source files.
-# This pattern also affects html_static_path and html_extra_path.
 exclude_patterns = []
 
+# Sphinx behavior
+autodoc_member_order = "groupwise"
+autodoc_default_options = {
+    "members": True,
+    "show-inheritance": True,
+}
+autosummary_generate = True
+todo_include_todos = True
+
+# -- Breathe / Doxygen configuration -----------------------------------------
+
+from pathlib import Path
+
+HERE = Path(__file__).parent.resolve()
+DOXYGEN_XML_DIR = HERE.parent / "build" / "xml"
+
+breathe_default_project = "csalt"
+breathe_projects = {
+    "csalt": str(DOXYGEN_XML_DIR),
+}
+
+# Tell Breathe that .c files are implementation files so it prefers header
+# declarations when resolving .. doxygenfunction:: directives.
+breathe_implementation_filename_extensions = [".c", ".cc", ".cpp"]
+
+# Map file extensions to the C domain
+breathe_domain_by_extension = {
+    "h": "c",
+    "c": "c",
+}
+
+# Optional sanity check
+if not DOXYGEN_XML_DIR.exists():
+    print(
+        f"[conf.py] WARNING: Doxygen XML not found at {DOXYGEN_XML_DIR}. "
+        "Run 'doxygen Doxyfile' before building Sphinx."
+    )
 
 # -- Options for HTML output -------------------------------------------------
 
-# The theme to use for HTML and HTML Help pages.  See the documentation for
-# a list of builtin themes.
-#
 html_theme = "sphinx_rtd_theme"
-# html_static_path = ['_static']
-# html_css_files = [
-#    'css/custom.css',
-# ]
-# html_theme_options = {"rightsidebar": False}
-# Add any paths that contain custom static files (such as style sheets) here,
-# relative to this directory. They are copied after the builtin static files,
-# so a file named "default.css" will overwrite the builtin "default.css".
-# html_static_path = ["_static"]
+html_theme_options = {
+    "navigation_depth": 4,
+}
+
 

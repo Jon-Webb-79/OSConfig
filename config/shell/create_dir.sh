@@ -94,6 +94,39 @@ resolve_base_dir() {
     printf '%s\n' "$base_dir"
 }
 
+write_sphinx_requirements() {
+    local req_file="$1"
+
+    cat > "$req_file" <<'EOF'
+sphinx
+breathe
+sphinx-copybutton
+sphinx-rtd-theme
+EOF
+}
+
+install_doc_packages() {
+    local venv_dir="$1"
+    local req_file="$2"
+    local project_root="$3"
+
+    local py_bin="${venv_dir}/bin/python"
+    local freeze_file="${project_root}/docs/requirements/requirements.txt"
+
+    [[ -x "$py_bin" ]] || die "Virtual environment python not found: $py_bin"
+    [[ -f "$req_file" ]] || die "Requirements file not found: $req_file"
+
+    "$py_bin" -m pip install --upgrade pip setuptools wheel \
+        || die "Failed to upgrade pip tooling in ${venv_dir}"
+
+    "$py_bin" -m pip install -r "$req_file" \
+        || die "Failed to install documentation packages in ${venv_dir}"
+
+    # Freeze exact versions for reproducibility
+    "$py_bin" -m pip freeze > "$freeze_file" \
+        || die "Failed to generate requirements.txt"
+}
+
 setup_python() {
     local project_root="$1"
     local project_name="$2"
@@ -165,6 +198,8 @@ setup_c_family() {
     local c_dir="${HOME}/.config/templates/C"
     local cpp_dir="${HOME}/.config/templates/C++"
     local template_dir
+    local doc_venv="${project_root}/docs/doxygen/.venv"
+    local req_file="${project_root}/docs/requirements/sphinx.txt"
 
     require_cmd python3
     require_cmd cp
@@ -181,7 +216,10 @@ setup_c_family() {
         "${project_root}/docs/requirements" \
         "${project_root}/docs/doxygen/sphinx_docs"
 
-    python3 -m venv "${project_root}/docs/doxygen/.venv"
+    python3 -m venv "${doc_venv}"
+
+    write_sphinx_requirements "${req_file}"
+    install_doc_packages "${doc_venv}" "${req_file}" "${project_root}"
 
     copy_if_exists "${c_dir}/Doxyfile" "${project_root}/docs/doxygen/Doxyfile"
     copy_if_exists "${c_dir}/mainpage.dox" "${project_root}/docs/doxygen/mainpage.dox"
