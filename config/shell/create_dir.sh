@@ -76,11 +76,13 @@ replace_cmake_tokens() {
     local file="$1"
     local project_name="$2"
     local cmake_version="$3"
+    local project_upper="${project_name^^}"
 
     [[ -f "$file" ]] || return 0
 
     sed -i \
         -e "s/prjct_name/${project_name}/g" \
+        -e "s/PRJCT_NAME/${project_upper}/g" \
         -e "s/X\\.YY\\.ZZ/${cmake_version}/g" \
         "$file"
 }
@@ -220,13 +222,10 @@ setup_python() {
     fi
 }
 
-setup_c_family() {
-    local language="$1"
-    local project_root="$2"
-    local project_name="$3"
+setup_c_project() {
+    local project_root="$1"
+    local project_name="$2"
     local c_dir="${HOME}/.config/templates/C"
-    local cpp_dir="${HOME}/.config/templates/C++"
-    local template_dir
     local src_root="${project_root}/${project_name}"
     local test_dir="${src_root}/test"
     local doc_venv="${project_root}/docs/doxygen/.venv"
@@ -252,7 +251,6 @@ setup_c_family() {
         "${project_root}/docs/doxygen/sphinx_docs"
 
     python3 -m venv "${doc_venv}"
-
     write_sphinx_requirements "${req_file}"
     install_doc_packages "${doc_venv}" "${req_file}"
 
@@ -260,46 +258,96 @@ setup_c_family() {
     copy_if_exists "${c_dir}/mainpage.dox" "${project_root}/docs/doxygen/mainpage.dox"
     copy_if_exists "${c_dir}/README.rst" "${project_root}/README.rst"
 
-    if [[ "$language" == "C" ]]; then
-        template_dir="${c_dir}"
+    copy_if_exists "${c_dir}/main.c" "${src_root}/main.c"
+    copy_if_exists "${c_dir}/avrMakefile" "${src_root}/Makefile"
+    copy_if_exists "${c_dir}/CMake1.txt" "${src_root}/CMakeLists.txt"
+    copy_if_exists "${c_dir}/CMaketest.txt" "${test_dir}/CMakeLists.txt"
 
-        copy_if_exists "${template_dir}/main.c" "${src_root}/main.c"
-        copy_if_exists "${template_dir}/avrMakefile" "${src_root}/Makefile"
-        copy_if_exists "${template_dir}/CMake1.txt" "${src_root}/CMakeLists.txt"
-        copy_if_exists "${template_dir}/CMaketest.txt" "${test_dir}/CMakeLists.txt"
+    copy_if_exists "${c_dir}/test.c" "${test_dir}/test.c"
+    copy_if_exists "${c_dir}/test_suite.c" "${test_dir}/test_suite.c"
+    copy_if_exists "${c_dir}/unit_test.c" "${test_dir}/unit_test.c"
 
-        copy_if_exists "${template_dir}/test.c" "${test_dir}/test.c"
-        copy_if_exists "${template_dir}/test_suite.c" "${test_dir}/test_suite.c"
-        copy_if_exists "${template_dir}/unit_test.c" "${test_dir}/unit_test.c"
+    replace_tokens "${src_root}/main.c" "main"
+    replace_tokens "${test_dir}/test.c" "test"
+    replace_tokens "${test_dir}/test_suite.c" "test_suite"
+    replace_tokens "${test_dir}/unit_test.c" "unit_test"
 
-        replace_tokens "${src_root}/main.c" "main"
-        replace_tokens "${test_dir}/test.c" "test"
-        replace_tokens "${test_dir}/test_suite.h" "test_suite"
-        replace_tokens "${test_dir}/unit_test.c" "unit_test"
+    replace_cmake_tokens "${src_root}/CMakeLists.txt" "${project_name}" "${cmake_version}"
+    replace_cmake_tokens "${test_dir}/CMakeLists.txt" "${project_name}" "${cmake_version}"
 
-        replace_cmake_tokens "${src_root}/CMakeLists.txt" "${project_name}" "${cmake_version}"
-        replace_cmake_tokens "${test_dir}/CMakeLists.txt" "${project_name}" "${cmake_version}"
-    else
-        template_dir="${cpp_dir}"
+    copy_if_exists "${c_dir}/debug.sh"   "${project_root}/scripts/unix/debug.sh"
+    copy_if_exists "${c_dir}/install.sh" "${project_root}/scripts/unix/install.sh"
+    copy_if_exists "${c_dir}/static.sh"  "${project_root}/scripts/unix/static.sh"
 
-        copy_if_exists "${template_dir}/main.cpp" "${src_root}/main.cpp"
-        copy_if_exists "${template_dir}/CMake1.txt" "${src_root}/CMakeLists.txt"
-        copy_if_exists "${template_dir}/CMaketest.txt" "${test_dir}/CMakeLists.txt"
-        copy_if_exists "${cpp_dir}/README.rst" "${project_root}/README.rst"
+    copy_if_exists "${c_dir}/debug.bat"   "${project_root}/scripts/Windows/debug.bat"
+    copy_if_exists "${c_dir}/install.bat" "${project_root}/scripts/Windows/install.bat"
+    copy_if_exists "${c_dir}/static.bat"  "${project_root}/scripts/Windows/static.bat"
 
-        # Test templates are stored under ~/.config/templates/C/
-        copy_if_exists "${c_dir}/test.c" "${test_dir}/test.c"
-        copy_if_exists "${c_dir}/test_suite.h" "${test_dir}/test_suite.h"
-        copy_if_exists "${c_dir}/unit_test.c" "${test_dir}/unit_test.c"
+    replace_script_tokens "${project_root}/scripts/unix/debug.sh"   "${project_name}"
+    replace_script_tokens "${project_root}/scripts/unix/install.sh" "${project_name}"
+    replace_script_tokens "${project_root}/scripts/unix/static.sh"  "${project_name}"
 
-        replace_tokens "${src_root}/main.cpp" "main"
-        replace_tokens "${test_dir}/test.c" "test"
-        replace_tokens "${test_dir}/test_suite.h" "test_suite"
-        replace_tokens "${test_dir}/unit_test.c" "unit_test"
+    replace_script_tokens "${project_root}/scripts/Windows/debug.bat"   "${project_name}"
+    replace_script_tokens "${project_root}/scripts/Windows/install.bat" "${project_name}"
+    replace_script_tokens "${project_root}/scripts/Windows/static.bat"  "${project_name}"
 
-        replace_cmake_tokens "${src_root}/CMakeLists.txt" "${project_name}" "${cmake_version}"
-        replace_cmake_tokens "${test_dir}/CMakeLists.txt" "${project_name}" "${cmake_version}"
+    chmod +x \
+        "${project_root}/scripts/unix/debug.sh" \
+        "${project_root}/scripts/unix/install.sh" \
+        "${project_root}/scripts/unix/static.sh"
+
+    if [[ -f "${project_root}/README.rst" ]]; then
+        sed -i "s/Project_Name/${project_name}/g" "${project_root}/README.rst"
     fi
+}
+
+setup_cpp_project() {
+    local project_root="$1"
+    local project_name="$2"
+    local cpp_dir="${HOME}/.config/templates/C++"
+    local c_dir="${HOME}/.config/templates/C"
+    local src_root="${project_root}/${project_name}"
+    local test_dir="${src_root}/test"
+    local doc_venv="${project_root}/docs/doxygen/.venv"
+    local req_file="${project_root}/docs/doxygen/sphinx.txt"
+    local cmake_version
+
+    require_cmd python3
+    require_cmd cp
+    require_cmd sed
+    require_cmd chmod
+
+    cmake_version="$(get_cmake_version)"
+
+    mkdir -p \
+        "${src_root}" \
+        "${src_root}/include" \
+        "${src_root}/simd" \
+        "${src_root}/build" \
+        "${test_dir}" \
+        "${project_root}/scripts/unix" \
+        "${project_root}/scripts/Windows" \
+        "${project_root}/data/test" \
+        "${project_root}/docs/doxygen/sphinx_docs"
+
+    python3 -m venv "${doc_venv}"
+    write_sphinx_requirements "${req_file}"
+    install_doc_packages "${doc_venv}" "${req_file}"
+
+    copy_if_exists "${c_dir}/Doxyfile" "${project_root}/docs/doxygen/Doxyfile"
+    copy_if_exists "${c_dir}/mainpage.dox" "${project_root}/docs/doxygen/mainpage.dox"
+    copy_if_exists "${cpp_dir}/README.rst" "${project_root}/README.rst"
+
+    copy_if_exists "${cpp_dir}/main.cpp" "${src_root}/main.cpp"
+    copy_if_exists "${cpp_dir}/CMake1.txt" "${src_root}/CMakeLists.txt"
+    copy_if_exists "${cpp_dir}/CMaketest.txt" "${test_dir}/CMakeLists.txt"
+    copy_if_exists "${cpp_dir}/test.cpp" "${test_dir}/test.cpp"
+
+    replace_tokens "${src_root}/main.cpp" "main"
+    replace_tokens "${test_dir}/test.cpp" "test"
+
+    replace_cmake_tokens "${src_root}/CMakeLists.txt" "${project_name}" "${cmake_version}"
+    replace_cmake_tokens "${test_dir}/CMakeLists.txt" "${project_name}" "${cmake_version}"
 
     copy_if_exists "${c_dir}/debug.sh"   "${project_root}/scripts/unix/debug.sh"
     copy_if_exists "${c_dir}/install.sh" "${project_root}/scripts/unix/install.sh"
@@ -359,8 +407,9 @@ main() {
     mkdir -p "${project_root}"
 
     case "$language" in
-        Python) setup_python "${project_root}" "${project_name}" ;;
-        C|C++)  setup_c_family "${language}" "${project_root}" "${project_name}" ;;
+        Python)  setup_python "${project_root}" "${project_name}" ;;
+        C)       setup_c_project "${project_root}" "${project_name}" ;;
+        C++)     setup_cpp_project "${project_root}" "${project_name}" ;;
         Arduino) setup_arduino "${project_root}" ;;
     esac
 
@@ -379,3 +428,4 @@ main() {
 }
 
 main "$@"
+

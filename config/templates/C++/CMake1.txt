@@ -1,7 +1,7 @@
 # ================================================================================
 # ================================================================================
 # - File:    CMakeLists.txt
-# - Purpose: Primary CMake file for C build system
+# - Purpose: Primary CMake file for C++ build system
 #
 # Source Metadata
 # - Author:  Name
@@ -10,49 +10,228 @@
 # - Copyright: Copyright Year, Name Inc.
 # ================================================================================
 # ================================================================================
+
 cmake_minimum_required(VERSION X.YY.ZZ)
-project(prjct_name)
 
-# Set the compiler (Optional)
-# set(CMAKE_CXX_COMPILER "/usr/bin/g++")
+# --------------------------------------------------------------------
+# Project
+# --------------------------------------------------------------------
+project(prjct_name VERSION 1.0.0 LANGUAGES CXX)
 
-set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
-enable_testing()
-
-# Set compiler flags
-if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU" OR "${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Werror -Wpedantic")
+# Build type default
+if(NOT CMAKE_BUILD_TYPE)
+  set(CMAKE_BUILD_TYPE Debug CACHE STRING
+      "Build type (Debug, Release, RelWithDebInfo, MinSizeRel)" FORCE)
 endif()
 
-# Define the library
-add_library(prjct_name
-	main.cpp)
+# --------------------------------------------------------------------
+# Options (scripts toggle these)
+# --------------------------------------------------------------------
+option(PRJCT_NAME_BUILD_TESTS   "Build unit tests" OFF)
+option(PRJCT_NAME_BUILD_STATIC  "Also build a static library (only meaningful when sources exist)" OFF)
 
-add_executable(unit_tests
-	test/test.cpp
+# Primary shared/static switch (shared default unless scripts override)
+if(NOT DEFINED BUILD_SHARED_LIBS)
+  set(BUILD_SHARED_LIBS ON)
+endif()
+
+include(GNUInstallDirs)
+
+# Uniform output layout for *all* targets (incl. tests)
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin")
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib")
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib")
+
+# --------------------------------------------------------------------
+# Sources / Headers
+# --------------------------------------------------------------------
+# Add .cpp files here when you have them
+set(PRJCT_NAME_SOURCES
+    error.cpp
+    allocator.cpp
+    string.cpp
 )
 
-target_include_directories(prjct_name PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
+set(PRJCT_NAME_PUBLIC_INCLUDE_DIR  ${CMAKE_CURRENT_SOURCE_DIR}/include)
+set(PRJCT_NAME_PRIVATE_SIMD_DIR    ${CMAKE_CURRENT_SOURCE_DIR}/simd)
 
-# Link against Google Test libraries
-target_link_libraries(unit_tests gtest gtest_main)
+# --------------------------------------------------------------------
+# Library target (dual-mode)
+#   - If PRJCT_NAME_SOURCES is empty => INTERFACE (header-only)
+#   - Else => normal library (STATIC/SHARED governed by BUILD_SHARED_LIBS)
+# --------------------------------------------------------------------
+list(LENGTH PRJCT_NAME_SOURCES _prjct_name_src_count)
 
-include(FetchContent)
+if(_prjct_name_src_count EQUAL 0)
+  add_library(prjct_name INTERFACE)
+else()
+  add_library(prjct_name ${PRJCT_NAME_SOURCES})
+endif()
 
-# Specify the version and URL for Google Test
-set(GTEST_VERSION 1.12.0)  # Replace with the desired version
-FetchContent_Declare(
-    googletest
-    URL https://github.com/google/googletest/archive/release-${GTEST_VERSION}.tar.gz
+add_library(prjct_name::prjct_name ALIAS prjct_name)
+
+# Include dirs:
+# - include/ is public
+# - simd/ is exposed because headers may include .inl from there
+if(_prjct_name_src_count EQUAL 0)
+  target_include_directories(prjct_name
+    INTERFACE
+      $<BUILD_INTERFACE:${PRJCT_NAME_PUBLIC_INCLUDE_DIR}>
+      $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/prjct_name>
+      $<BUILD_INTERFACE:${PRJCT_NAME_PRIVATE_SIMD_DIR}>
+      $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/prjct_name/simd>
+      ${CMAKE_CURRENT_SOURCE_DIR}/include
+  )
+else()
+  target_include_directories(prjct_name
+    PUBLIC
+      $<BUILD_INTERFACE:${PRJCT_NAME_PUBLIC_INCLUDE_DIR}>
+      $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/prjct_name>
+      $<BUILD_INTERFACE:${PRJCT_NAME_PRIVATE_SIMD_DIR}>
+      $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/prjct_name/simd>
+  )
+endif()
+
+# --------------------------------------------------------------------
+# Warnings / SIMD flags
+#   Header-only => INTERFACE flags (apply to consumers)
+#   Compiled lib => PRIVATE flags (apply to library build)
+# --------------------------------------------------------------------
+if(_prjct_name_src_count EQUAL 0)
+  set(_prjct_name_flag_scope INTERFACE)
+else()
+  set(_prjct_name_flag_scope PRIVATE)
+endif()
+
+if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
+  target_compile_options(prjct_name ${_prjct_name_flag_scope} -Wall -Wextra -Wpedantic)
+
+  if(CMAKE_BUILD_TYPE STREQUAL "Debug")
+    message(STATUS "prjct_name: Debug build with AVX/AVX2 disabled; SSE3/SSE4.1 allowed, no -Werror")
+    target_compile_options(prjct_name ${_prjct_name_flag_scope}
+      -O0 -g -march=x86-64 -mno-avx -mno-avx2 -mno-fma -msse3 -msse4.1
+    )
+  else()
+    message(STATUS "prjct_name: ${CMAKE_BUILD_TYPE} build with -O3 -march=native and -Werror")
+    target_compile_options(prjct_name ${_prjct_name_flag_scope} -O3 -march=native -Werror)
+  endif()
+
+elseif(MSVC)
+  target_compile_options(prjct_name ${_prjct_name_flag_scope} /W4)
+  target_compile_definitions(prjct_name ${_prjct_name_flag_scope} _CRT_SECURE_NO_WARNINGS)
+
+  if(NOT CMAKE_BUILD_TYPE STREQUAL "Debug")
+    target_compile_options(prjct_name ${_prjct_name_flag_scope} /arch:AVX2 /WX)
+  endif()
+endif()
+
+# Version info only makes sense for a compiled library
+if(NOT _prjct_name_src_count EQUAL 0)
+  set_target_properties(prjct_name PROPERTIES
+    VERSION   ${PROJECT_VERSION}
+    SOVERSION ${PROJECT_VERSION_MAJOR}
+  )
+endif()
+
+# --------------------------------------------------------------------
+# Optional additional static library (only when sources exist)
+# --------------------------------------------------------------------
+if(PRJCT_NAME_BUILD_STATIC AND NOT _prjct_name_src_count EQUAL 0)
+  add_library(prjct_name_static STATIC ${PRJCT_NAME_SOURCES})
+  add_library(prjct_name::prjct_name_static ALIAS prjct_name_static)
+  set_target_properties(prjct_name_static PROPERTIES OUTPUT_NAME prjct_name)
+
+  target_include_directories(prjct_name_static
+    PUBLIC
+      $<BUILD_INTERFACE:${PRJCT_NAME_PUBLIC_INCLUDE_DIR}>
+      $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/prjct_name>
+      $<BUILD_INTERFACE:${PRJCT_NAME_PRIVATE_SIMD_DIR}>
+      $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/prjct_name/simd>
+  )
+
+  if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
+    target_compile_options(prjct_name_static PRIVATE -Wall -Wextra -Wpedantic)
+    if(CMAKE_BUILD_TYPE STREQUAL "Debug")
+      target_compile_options(prjct_name_static PRIVATE
+        -O0 -g -march=x86-64 -mno-avx -mno-avx2 -mno-fma -msse3 -msse4.1
+      )
+    else()
+      target_compile_options(prjct_name_static PRIVATE -O3 -march=native -Werror)
+    endif()
+  elseif(MSVC)
+    target_compile_options(prjct_name_static PRIVATE /W4)
+    target_compile_definitions(prjct_name_static PRIVATE _CRT_SECURE_NO_WARNINGS)
+    if(NOT CMAKE_BUILD_TYPE STREQUAL "Debug")
+      target_compile_options(prjct_name_static PRIVATE /arch:AVX2 /WX)
+    endif()
+  endif()
+endif()
+
+# --------------------------------------------------------------------
+# Installation + CMake package config for find_package(prjct_name)
+# --------------------------------------------------------------------
+install(TARGETS prjct_name
+  EXPORT prjct_nameTargets
+  LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+  ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+  RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+  INCLUDES DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
 )
 
-# Fetch and configure Google Test
-FetchContent_MakeAvailable(googletest)
+if(PRJCT_NAME_BUILD_STATIC AND NOT _prjct_name_src_count EQUAL 0)
+  install(TARGETS prjct_name_static
+    EXPORT prjct_nameTargets
+    ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    INCLUDES DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+  )
+endif()
 
-# Link against Google Test libraries
-target_link_libraries(unit_tests gtest gtest_main)
+# Public headers → include/prjct_name/
+install(DIRECTORY ${PRJCT_NAME_PUBLIC_INCLUDE_DIR}/
+  DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/prjct_name
+  FILES_MATCHING PATTERN "*.hpp" PATTERN "*.h"
+)
+
+# SIMD inlines → include/prjct_name/simd/
+install(DIRECTORY ${PRJCT_NAME_PRIVATE_SIMD_DIR}/
+  DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/prjct_name/simd
+  FILES_MATCHING PATTERN "*.inl"
+)
+
+install(EXPORT prjct_nameTargets
+  FILE prjct_nameTargets.cmake
+  NAMESPACE prjct_name::
+  DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/prjct_name
+)
+
+include(CMakePackageConfigHelpers)
+write_basic_package_version_file(
+  "${CMAKE_CURRENT_BINARY_DIR}/prjct_nameConfigVersion.cmake"
+  VERSION ${PROJECT_VERSION}
+  COMPATIBILITY SameMajorVersion
+)
+
+file(WRITE "${CMAKE_CURRENT_BINARY_DIR}/prjct_nameConfig.cmake"
+"include(\"\\${CMAKE_CURRENT_LIST_DIR}/prjct_nameTargets.cmake\")\n")
+
+install(FILES
+  "${CMAKE_CURRENT_BINARY_DIR}/prjct_nameConfig.cmake"
+  "${CMAKE_CURRENT_BINARY_DIR}/prjct_nameConfigVersion.cmake"
+  DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/prjct_name
+)
+
+# --------------------------------------------------------------------
+# Tests
+# --------------------------------------------------------------------
+if(PRJCT_NAME_BUILD_TESTS)
+  enable_testing()
+  add_subdirectory(test)
+endif()
+
 # ================================================================================
 # ================================================================================
 # eof

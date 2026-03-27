@@ -1,31 +1,127 @@
 ************
-Project Name
+Project_Name
 ************
 
-Describe project here
+Overview
+========
+Brief description of the C++ library. Explain the purpose, scope, and key
+design goals (performance, portability, abstraction, etc.).
 
-Contributing
-############
-Pull requests are welcome.  For major changes, please open an issue first to discuss
-what you would like to change.  Please make sure to include and update tests
-as well as relevant doc-string and sphinx updates.
+Features
+========
+- Feature 1
+- Feature 2
+- Feature 3
 
-License
-#######
-The License is included in the **project_name** package
+Project Structure
+=================
+::
+
+  Project_Name/
+  ├── Project_Name/
+  │   ├── include/         # Public headers
+  │   ├── simd/            # SIMD (if applicable)
+  │   ├── test/            # GoogleTest unit tests
+  │   └── CMakeLists.txt
+  ├── scripts/
+  │   ├── unix/
+  │   └── Windows/
+  ├── docs/
+  │   └── doxygen/
+  └── README.rst
 
 Requirements
-############
-Python 3.8 or greater
-List code package requirements here
+============
+- Git
+- CMake (version X.YY.ZZ or later)
+- C++ compiler (GCC, Clang, or MSVC with C++17 support)
+
+Testing:
+- GoogleTest (automatically fetched via CMake)
+
+Build and Test
+==============
+
+Getting the Code
+----------------
+.. code-block:: bash
+
+  git clone <repo_url>
+  cd Project_Name
+
+Debug Build (with tests)
+------------------------
+**Linux/macOS:**
+
+.. code-block:: bash
+
+  cd scripts/unix
+  ./debug.sh
+
+**Windows:**
+
+.. code-block:: batch
+
+  cd scripts\Windows
+  debug.bat
+
+Run Tests
+---------
+.. code-block:: bash
+
+  cd build/debug
+  ./unit_tests
+
+Tests are automatically discovered using GoogleTest.
+
+Static Build
+------------
+.. code-block:: bash
+
+  cd scripts/unix
+  ./static.sh
 
 Installation
-############
-In order to download this repository from github, follow these instructions
+============
+**Linux/macOS:**
 
-1. Ensure you have .git installed on your computer
-2. At your desired location create a directory titled ``project_name``
-3. Open a terminal (Bash, zsh, Linux, or DOS) and cd to the ``project_name`` directory and type
-   ``close https://github.com/Jon-Webb-79/Project_Name.git project_name``
-4. Install with pip3
-   ``pip3 install -r requirements``
+.. code-block:: bash
+
+  cd scripts/unix
+  sudo ./install.sh
+
+**Windows:**
+
+Run ``scripts\Windows\install.bat`` as Administrator.
+
+Documentation
+=============
+Documentation is generated using Doxygen and Sphinx.
+
+Setup:
+.. code-block:: bash
+
+  cd docs/doxygen
+  source .venv/bin/activate
+  pip install -r requirements.txt
+
+Build docs:
+.. code-block:: bash
+
+  doxygen Doxyfile
+  sphinx-build -b html sphinx_docs build
+
+Future Work
+===========
+- Add new modules
+- Improve template abstractions
+- Extend SIMD support
+
+Contributing
+============
+Pull requests are welcome. For major changes, please open an issue first to
+discuss proposed modifications.
+
+License
+=======
+This project is licensed under the MIT License.
