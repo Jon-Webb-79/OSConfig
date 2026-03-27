@@ -2,47 +2,140 @@
 Project_Name
 ************
 
-Describe project here
+Overview
+========
+Brief description of the project. Explain what the package does, its purpose,
+and the type of problems it solves.
 
 .. image:: https://img.shields.io/badge/code%20style-black-000000.svg
     :target: https://github.com/psf/black
 
-.. image:: https://img.shields.io/badge/%20imports-isort-%231674b1?style=flat&labelColor=ef8336
+.. image:: https://img.shields.io/badge/imports-isort-%231674b1?style=flat&labelColor=ef8336
     :target: https://pycqa.github.io/isort/
 
 .. image:: https://readthedocs.org/projects/flake8/badge/?version=latest
     :target: https://flake8.pycqa.org/en/latest/?badge=latest
-    :alt: Documentation Status
 
 .. image:: http://www.mypy-lang.org/static/mypy_badge.svg
-   :target: http://mypy-lang.org/ 
+    :target: http://mypy-lang.org/
 
+.. image:: https://github.com/username/Project_Name/workflows/Tests/badge.svg?cache=none
+    :target: https://github.com/username/Project_Name/actions
 
-.. image:: https://github.com/Jon-Webb-79/Project_Name/workflows/Tests/badge.svg?cache=none
-    :target: https://github.com/Jon-Webb-79/Project_Name/actions
+Features
+========
+- Feature 1
+- Feature 2
+- Feature 3
 
-Contributing
-############
-Pull requests are welcome.  For major changes, please open an issue first to discuss
-what you would like to change.  Please make sure to include and update tests
-as well as relevant doc-string and sphinx updates.
+Project Structure
+=================
+::
 
-License
-#######
-The License is included in the **project_name** package
+  Project_Name/
+  ├── Project_Name/       # Source package
+  ├── tests/              # Unit tests
+  ├── docs/               # Documentation (Sphinx)
+  ├── scripts/            # Utility scripts
+  ├── pyproject.toml
+  └── README.rst
 
 Requirements
-############
-Python 3.8 or greater
-List code package requirements here
+============
+- Python 3.10 or later
+- pip
+
+Dependencies are listed in:
+- ``requirements.txt``
 
 Installation
-############
-In order to download this repository from github, follow these instructions
+============
+Clone the repository:
 
-1. Ensure you have .git installed on your computer
-2. At your desired location create a directory titled ``Project_Name``
-3. Open a terminal (Bash, zsh, Linux, or DOS) and cd to the ``Project_Name`` directory and type
-   ``close https://github.com/Jon-Webb-79/Project_Name.git Project_Name``
-4. Install with pip3
-   ``pip3 install -r requirements``
+.. code-block:: bash
+
+  git clone https://github.com/username/Project_Name.git
+  cd Project_Name
+
+Create a virtual environment:
+
+.. code-block:: bash
+
+  python -m venv .venv
+  source .venv/bin/activate
+
+Install dependencies:
+
+.. code-block:: bash
+
+  pip install -r requirements.txt
+
+Install the package (optional):
+
+.. code-block:: bash
+
+  pip install -e .
+
+Development
+===========
+
+Run tests:
+----------
+.. code-block:: bash
+
+  pytest
+
+Linting and formatting:
+-----------------------
+.. code-block:: bash
+
+  black .
+  isort .
+  flake8
+  mypy .
+
+Documentation
+=============
+Documentation is generated using Sphinx.
+
+Setup environment:
+
+.. code-block:: bash
+
+  cd docs
+  python -m venv .venv
+  source .venv/bin/activate
+  pip install -r requirements.txt
+
+Build documentation:
+
+.. code-block:: bash
+
+  make html
+
+Output will be in:
+
+::
+
+  docs/build/html/
+
+Future Work
+===========
+- Add feature X
+- Improve performance
+- Expand test coverage
+
+Contributing
+============
+Pull requests are welcome. For major changes, please open an issue first to
+discuss proposed changes.
+
+Please ensure:
+- Tests are updated
+- Code is formatted (black/isort)
+- Type hints are valid (mypy)
+- Documentation is updated
+
+License
+=======
+This project is licensed under the MIT License.

@@ -158,10 +158,61 @@ install_doc_packages() {
         || die "Failed to generate frozen requirements file: $freeze_file"
 }
 
+write_python_dev_requirements() {
+    local req_file="$1"
+
+    cat > "$req_file" <<'EOF'
+pytest
+flake8
+mypy
+black
+isort
+flake8-bandit
+flake8-bugbear
+flake8-builtins
+flake8-comprehensions
+flake8-implicit-str-concat
+flake8-print
+tox
+pytest-cov
+pyupgrade
+pre-commit
+sphinx
+sphinx-rtd-theme
+sphinx-copybutton
+EOF
+}
+
+install_python_packages() {
+    local venv_dir="$1"
+    local req_file="$2"
+
+    local py_bin="${venv_dir}/bin/python"
+    local freeze_file
+    freeze_file="$(dirname "$req_file")/requirements.txt"
+
+    [[ -x "$py_bin" ]] || die "Virtual environment python not found: $py_bin"
+    [[ -f "$req_file" ]] || die "Requirements file not found: $req_file"
+
+    "$py_bin" -m pip install --upgrade pip setuptools wheel \
+        || die "Failed to upgrade pip tooling in ${venv_dir}"
+
+    "$py_bin" -m pip install poetry \
+        || die "Failed to install Poetry in ${venv_dir}"
+
+    "$py_bin" -m pip install -r "$req_file" \
+        || die "Failed to install Python development packages in ${venv_dir}"
+
+    "$py_bin" -m pip freeze > "$freeze_file" \
+        || die "Failed to generate frozen requirements file: $freeze_file"
+}
+
 setup_python() {
     local project_root="$1"
     local project_name="$2"
     local py_dir="${HOME}/.config/templates/python"
+    local py_venv="${project_root}/.venv"
+    local req_file="${project_root}/docs/sphinx/dev_requirements.txt"
 
     require_cmd python3
     require_cmd cp
@@ -175,15 +226,9 @@ setup_python() {
         "${project_root}/data/test" \
         "${project_root}/docs/sphinx/source"
 
-    if command -v poetry >/dev/null 2>&1; then
-        (
-            cd "${project_root}"
-            poetry init -n --name "${project_name}" >/dev/null 2>&1 || true
-            poetry config virtualenvs.in-project true >/dev/null 2>&1 || true
-        )
-    else
-        python3 -m venv "${project_root}/.venv"
-    fi
+    python3 -m venv "${py_venv}"
+    write_python_dev_requirements "${req_file}"
+    install_python_packages "${py_venv}" "${req_file}"
 
     copy_if_exists "${py_dir}/.pre-commit-config.yaml" "${project_root}/.pre-commit-config.yaml"
     copy_if_exists "${py_dir}/.readthedocs.yaml" "${project_root}/.readthedocs.yaml"
@@ -428,4 +473,3 @@ main() {
 }
 
 main "$@"
-
