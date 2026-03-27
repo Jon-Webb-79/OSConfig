@@ -1,0 +1,97 @@
+# ================================================================================
+# Ghostty Terminal Configuration
+# ================================================================================
+#
+# Description:
+#   This file defines the configuration for the Ghostty terminal emulator,
+#   including window behavior, appearance, shell integration, and key bindings.
+#
+#   The configuration is designed to provide:
+#     - A modern, visually clean terminal experience
+#     - Consistent window sizing and layout behavior
+#     - Optimized text rendering and spacing
+#     - Seamless shell integration (Zsh)
+#     - Efficient pane management via custom key bindings
+#
+#   The configuration includes:
+#     - Window layout and opacity settings
+#     - Font and theme customization
+#     - Optional shader effects (disabled by default)
+#     - Shell integration settings
+#     - Custom key bindings for workflow efficiency
+#
+#   Design goals:
+#     - Minimal (only essential, high-impact settings)
+#     - Readable (organized and well-documented)
+#     - Portable (works across Linux environments)
+#     - Extensible (easy to add themes, shaders, and bindings)
+#
+# Usage:
+#   Place this file at:
+#
+#       ~/.config/ghostty/config
+#
+#   Reload configuration with:
+#
+#       Ctrl+Shift+R   (based on keybind below)
+#
+# Notes:
+#   - Some features (e.g., window-save-state) may be platform-dependent
+#   - Shader support is experimental and may not work reliably
+#   - Opacity behavior may vary depending on application rendering (e.g., tmux)
+#
+# Source Metadata:
+#   Author:    Jonathan A. Webb
+#   Created:   March 26, 2026
+#   Version:   1.0
+#
+# ================================================================================
+# ================================================================================ 
+# Window appearance
+
+background-opacity = 0.80
+window-decoration = true
+window-height = 45
+window-width = 140
+#adjust-cell-height = 20%
+window-padding-x = 20
+window-padding-y = 10
+window-save-state = always
+# ================================================================================ 
+# Shaders 
+# custom-shader = "~/.config/ghostty/shaders/julias.glsl"  # Does not work properly
+# custom-shader = "~/.config/ghostty/shaders/smoke-and-ghosts.glsl"
+# custom-shader = "~/.config/ghostty/shaders/just-snow.glsl"
+# custom-shader = "~/.config/ghostty/shaders/gears-and-belts.glsl"
+# custom-shader = "~/.config/ghostty/shaders/dither.glsl"
+# custom-shader = "~/.config/ghostty/shaders/matrix-hallway.glsl"
+# custom-shader = "~/.config/ghostty/shaders/sin-interference.glsl"
+# custom-shader = "~/.config/ghostty/shaders/starfield-colors.glsl"
+# =================================================================================
+# Shell Integration
+
+adjust-cell-height = 5%
+shell-integration = zsh
+# ================================================================================ 
+# Text Appearance
+
+font-size = 14
+theme = Banana Blueberry
+# theme = OneHalfDark
+# theme = Desert
+# theme = Atom
+mouse-hide-while-typing = true
+# ================================================================================ 
+# key bindings
+
+keybind = shift+ctrl+r=reload_config
+keybind = shift+ctrl+v=new_split:left
+keybind = shift+ctrl+s=new_split:up
+keybind = shift+ctrl+h=goto_split:left
+keybind = shift+ctrl+l=goto_split:right
+keybind = shift+ctrl+k=goto_split:top
+keybind = shift+ctrl+j=goto_split:bottom
+keybind = shift+ctrl+w=close_surface
+# ================================================================================ 
+# ================================================================================ 
+# eof
