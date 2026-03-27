@@ -66,6 +66,37 @@ replace_tokens() {
         "$file"
 }
 
+get_cmake_version() {
+    require_cmd cmake
+    require_cmd awk
+    cmake --version | awk 'NR == 1 { print $3 }'
+}
+
+replace_cmake_tokens() {
+    local file="$1"
+    local project_name="$2"
+    local cmake_version="$3"
+
+    [[ -f "$file" ]] || return 0
+
+    sed -i \
+        -e "s/prjct_name/${project_name}/g" \
+        -e "s/X\\.YY\\.ZZ/${cmake_version}/g" \
+        "$file"
+}
+
+replace_script_tokens() {
+    local file="$1"
+    local project_name="$2"
+
+    [[ -f "$file" ]] || return 0
+
+    sed -i \
+        -e "s/prjct_name/${project_name}/g" \
+        -e "s/PRJCT_NAME/${project_name^^}/g" \
+        "$file"
+}
+
 copy_if_exists() {
     local src="$1"
     local dst="$2"
@@ -80,7 +111,6 @@ resolve_base_dir() {
     if [[ $# -ge 2 ]]; then
         base_dir="$2"
 
-        # Resolve relative paths from the current working directory
         if [[ ! "$base_dir" = /* ]]; then
             base_dir="${PWD}/${base_dir}"
         fi
@@ -108,10 +138,10 @@ EOF
 install_doc_packages() {
     local venv_dir="$1"
     local req_file="$2"
-    local project_root="$3"
 
     local py_bin="${venv_dir}/bin/python"
-    local freeze_file="${project_root}/docs/requirements/requirements.txt"
+    local freeze_file
+    freeze_file="$(dirname "$req_file")/requirements.txt"
 
     [[ -x "$py_bin" ]] || die "Virtual environment python not found: $py_bin"
     [[ -f "$req_file" ]] || die "Requirements file not found: $req_file"
@@ -122,9 +152,8 @@ install_doc_packages() {
     "$py_bin" -m pip install -r "$req_file" \
         || die "Failed to install documentation packages in ${venv_dir}"
 
-    # Freeze exact versions for reproducibility
     "$py_bin" -m pip freeze > "$freeze_file" \
-        || die "Failed to generate requirements.txt"
+        || die "Failed to generate frozen requirements file: $freeze_file"
 }
 
 setup_python() {
@@ -139,10 +168,9 @@ setup_python() {
     mkdir -p \
         "${project_root}/${project_name}" \
         "${project_root}/tests" \
-        "${project_root}/scripts/bash" \
-        "${project_root}/scripts/zsh" \
+        "${project_root}/scripts/unix" \
+        "${project_root}/scripts/Windows" \
         "${project_root}/data/test" \
-        "${project_root}/docs/requirements" \
         "${project_root}/docs/sphinx/source"
 
     if command -v poetry >/dev/null 2>&1; then
@@ -183,6 +211,7 @@ setup_python() {
     if [[ -f "${project_root}/README.rst" ]]; then
         sed -i "s/Project_Name/${project_name}/g" "${project_root}/README.rst"
     fi
+
     if [[ -f "${project_root}/pyproject.toml" ]]; then
         sed -i \
             -e "s/README.md/README.rst/g" \
@@ -198,28 +227,34 @@ setup_c_family() {
     local c_dir="${HOME}/.config/templates/C"
     local cpp_dir="${HOME}/.config/templates/C++"
     local template_dir
+    local src_root="${project_root}/${project_name}"
+    local test_dir="${src_root}/test"
     local doc_venv="${project_root}/docs/doxygen/.venv"
-    local req_file="${project_root}/docs/requirements/sphinx.txt"
+    local req_file="${project_root}/docs/doxygen/sphinx.txt"
+    local cmake_version
 
     require_cmd python3
     require_cmd cp
     require_cmd sed
+    require_cmd chmod
+
+    cmake_version="$(get_cmake_version)"
 
     mkdir -p \
-        "${project_root}/${project_name}" \
-        "${project_root}/${project_name}/include" \
-        "${project_root}/${project_name}/build" \
-        "${project_root}/${project_name}/test" \
-        "${project_root}/scripts/bash" \
-        "${project_root}/scripts/zsh" \
+        "${src_root}" \
+        "${src_root}/include" \
+        "${src_root}/simd" \
+        "${src_root}/build" \
+        "${test_dir}" \
+        "${project_root}/scripts/unix" \
+        "${project_root}/scripts/Windows" \
         "${project_root}/data/test" \
-        "${project_root}/docs/requirements" \
         "${project_root}/docs/doxygen/sphinx_docs"
 
     python3 -m venv "${doc_venv}"
 
     write_sphinx_requirements "${req_file}"
-    install_doc_packages "${doc_venv}" "${req_file}" "${project_root}"
+    install_doc_packages "${doc_venv}" "${req_file}"
 
     copy_if_exists "${c_dir}/Doxyfile" "${project_root}/docs/doxygen/Doxyfile"
     copy_if_exists "${c_dir}/mainpage.dox" "${project_root}/docs/doxygen/mainpage.dox"
@@ -227,17 +262,65 @@ setup_c_family() {
 
     if [[ "$language" == "C" ]]; then
         template_dir="${c_dir}"
-        copy_if_exists "${template_dir}/main.c" "${project_root}/${project_name}/main.c"
-        copy_if_exists "${template_dir}/avrMakefile" "${project_root}/${project_name}/Makefile"
-        copy_if_exists "${template_dir}/CMake1.txt" "${project_root}/${project_name}/CMakeLists.txt"
-        replace_tokens "${project_root}/${project_name}/main.c" "main"
+
+        copy_if_exists "${template_dir}/main.c" "${src_root}/main.c"
+        copy_if_exists "${template_dir}/avrMakefile" "${src_root}/Makefile"
+        copy_if_exists "${template_dir}/CMake1.txt" "${src_root}/CMakeLists.txt"
+        copy_if_exists "${template_dir}/CMaketest.txt" "${test_dir}/CMakeLists.txt"
+
+        copy_if_exists "${template_dir}/test.c" "${test_dir}/test.c"
+        copy_if_exists "${template_dir}/test_suite.c" "${test_dir}/test_suite.c"
+        copy_if_exists "${template_dir}/unit_test.c" "${test_dir}/unit_test.c"
+
+        replace_tokens "${src_root}/main.c" "main"
+        replace_tokens "${test_dir}/test.c" "test"
+        replace_tokens "${test_dir}/test_suite.h" "test_suite"
+        replace_tokens "${test_dir}/unit_test.c" "unit_test"
+
+        replace_cmake_tokens "${src_root}/CMakeLists.txt" "${project_name}" "${cmake_version}"
+        replace_cmake_tokens "${test_dir}/CMakeLists.txt" "${project_name}" "${cmake_version}"
     else
         template_dir="${cpp_dir}"
-        copy_if_exists "${template_dir}/main.cpp" "${project_root}/${project_name}/main.cpp"
-        copy_if_exists "${template_dir}/CMake1.txt" "${project_root}/${project_name}/CMakeLists.txt"
+
+        copy_if_exists "${template_dir}/main.cpp" "${src_root}/main.cpp"
+        copy_if_exists "${template_dir}/CMake1.txt" "${src_root}/CMakeLists.txt"
+        copy_if_exists "${template_dir}/CMaketest.txt" "${test_dir}/CMakeLists.txt"
         copy_if_exists "${cpp_dir}/README.rst" "${project_root}/README.rst"
-        replace_tokens "${project_root}/${project_name}/main.cpp" "main"
+
+        # Test templates are stored under ~/.config/templates/C/
+        copy_if_exists "${c_dir}/test.c" "${test_dir}/test.c"
+        copy_if_exists "${c_dir}/test_suite.h" "${test_dir}/test_suite.h"
+        copy_if_exists "${c_dir}/unit_test.c" "${test_dir}/unit_test.c"
+
+        replace_tokens "${src_root}/main.cpp" "main"
+        replace_tokens "${test_dir}/test.c" "test"
+        replace_tokens "${test_dir}/test_suite.h" "test_suite"
+        replace_tokens "${test_dir}/unit_test.c" "unit_test"
+
+        replace_cmake_tokens "${src_root}/CMakeLists.txt" "${project_name}" "${cmake_version}"
+        replace_cmake_tokens "${test_dir}/CMakeLists.txt" "${project_name}" "${cmake_version}"
     fi
+
+    copy_if_exists "${c_dir}/debug.sh"   "${project_root}/scripts/unix/debug.sh"
+    copy_if_exists "${c_dir}/install.sh" "${project_root}/scripts/unix/install.sh"
+    copy_if_exists "${c_dir}/static.sh"  "${project_root}/scripts/unix/static.sh"
+
+    copy_if_exists "${c_dir}/debug.bat"   "${project_root}/scripts/Windows/debug.bat"
+    copy_if_exists "${c_dir}/install.bat" "${project_root}/scripts/Windows/install.bat"
+    copy_if_exists "${c_dir}/static.bat"  "${project_root}/scripts/Windows/static.bat"
+
+    replace_script_tokens "${project_root}/scripts/unix/debug.sh"   "${project_name}"
+    replace_script_tokens "${project_root}/scripts/unix/install.sh" "${project_name}"
+    replace_script_tokens "${project_root}/scripts/unix/static.sh"  "${project_name}"
+
+    replace_script_tokens "${project_root}/scripts/Windows/debug.bat"   "${project_name}"
+    replace_script_tokens "${project_root}/scripts/Windows/install.bat" "${project_name}"
+    replace_script_tokens "${project_root}/scripts/Windows/static.bat"  "${project_name}"
+
+    chmod +x \
+        "${project_root}/scripts/unix/debug.sh" \
+        "${project_root}/scripts/unix/install.sh" \
+        "${project_root}/scripts/unix/static.sh"
 
     if [[ -f "${project_root}/README.rst" ]]; then
         sed -i "s/Project_Name/${project_name}/g" "${project_root}/README.rst"

@@ -1,7 +1,7 @@
 // ================================================================================
 // ================================================================================
-// - File:    filename.c
-// - Purpose: Describe the file purpose here
+// - File:    test_suite.h
+// - Purpose: Test suite declarations for prjct_name
 //
 // Source Metadata
 // - Author:  Name
@@ -10,34 +10,31 @@
 // - Copyright: Copyright Year, Company Inc.
 // ================================================================================
 // ================================================================================
-// Include modules here
 
-#include "test_suite.h"
+#ifndef TEST_SUITE_H
+#define TEST_SUITE_H
+
+#include <stdarg.h>
+#include <setjmp.h>
+#include <stddef.h>
+#include <cmocka.h>
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 // ================================================================================
 // ================================================================================
-// TESTS
+// TEST SUITE DECLARATIONS
 
-static void test_func(void **state)
-{
-    (void)state;
+extern const struct CMUnitTest test_example[];
+extern const size_t test_example_count;
 
-    int a = 5;
-    int b = 2;
-    int c = a + b;
-
-    assert_int_equal(c, 7);
+#ifdef __cplusplus
 }
+#endif
 
-// ================================================================================
-// ================================================================================
-// TEST REGISTRY
-
-const struct CMUnitTest filename[] = {
-    cmocka_unit_test(test_func),
-};
-
-const size_t filename_count = sizeof(filename) / sizeof(filename[0]);
+#endif /* TEST_SUITE_H */
 
 // ================================================================================
 // ================================================================================

@@ -1,42 +1,110 @@
 # ================================================================================
 # ================================================================================
 # - File:    CMakeLists.txt
-# - Purpose: Primary CMake file for C build system
+# - Purpose: Primary CMake file for a C project
 #
 # Source Metadata
 # - Author:  Name
 # - Date:    Month Day, Year
-# - Version: 1.0
+# - Version: 1.0.0
 # - Copyright: Copyright Year, Name Inc.
 # ================================================================================
 # ================================================================================
+
 cmake_minimum_required(VERSION X.YY.ZZ)
-project(prjct_name)
 
-# Set the compiler (Optional)
-# set(CMAKE_C_COMPILER "/usr/bin/gcc")
+project(prjct_name VERSION 0.0.1 LANGUAGES C)
 
-set(CMAKE_C_STANDARD 11)
+set(CMAKE_C_STANDARD 17)
 set(CMAKE_C_STANDARD_REQUIRED ON)
+set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
-enable_testing()
-
-# Set compiler flags
-if ("${CMAKE_C_COMPILER_ID}" STREQUAL "GNU" OR "${CMAKE_C_COMPILER_ID}" STREQUAL "Clang")
-    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -Werror -Wpedantic")
+# Build type default
+if(NOT CMAKE_BUILD_TYPE)
+    set(CMAKE_BUILD_TYPE Debug CACHE STRING "Build type (Debug, Release, RelWithDebInfo, MinSizeRel)" FORCE)
 endif()
 
-# Define the library
-add_library(prjct_name
-	hello.c)
-target_include_directories(Hello PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
+# Primary shared/static switch
+if(NOT DEFINED BUILD_SHARED_LIBS)
+    set(BUILD_SHARED_LIBS ON)
+endif()
 
-# Define the tests
-add_executable(unit_tests
-	test/unit_test.c
-	test/test_hello.c)
-target_link_libraries(unit_tests prjct_name cmocka)
-add_test(NAME unit_tests COMMAND unit_test)
+include(GNUInstallDirs)
+
+# Uniform output layout
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin")
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib")
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib")
+
+# --------------------------------------------------------------------
+# Options
+# --------------------------------------------------------------------
+option(PRJCT_NAME_BUILD_TESTS "Build unit tests" OFF)
+
+# --------------------------------------------------------------------
+# Sources / Headers
+# --------------------------------------------------------------------
+set(PRJCT_NAME_SOURCES
+    code_here.c
+)
+
+set(PRJCT_NAME_PUBLIC_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include)
+set(PRJCT_NAME_PRIVATE_SIMD_DIR   ${CMAKE_CURRENT_SOURCE_DIR}/simd)
+
+# --------------------------------------------------------------------
+# Main library target
+# --------------------------------------------------------------------
+add_library(prjct_name ${PRJCT_NAME_SOURCES})
+add_library(prjct_name::prjct_name ALIAS prjct_name)
+
+target_include_directories(prjct_name
+    PUBLIC
+        $<BUILD_INTERFACE:${PRJCT_NAME_PUBLIC_INCLUDE_DIR}>
+        $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/prjct_name>
+    PRIVATE
+        ${PRJCT_NAME_PRIVATE_SIMD_DIR}
+)
+
+if(CMAKE_C_COMPILER_ID MATCHES "GNU|Clang")
+    target_compile_options(prjct_name PRIVATE -Wall -Wextra -Wpedantic)
+elseif(MSVC)
+    target_compile_options(prjct_name PRIVATE /W4)
+    target_compile_definitions(prjct_name PRIVATE _CRT_SECURE_NO_WARNINGS)
+endif()
+
+if(UNIX AND NOT APPLE)
+    target_link_libraries(prjct_name PUBLIC m)
+endif()
+
+# --------------------------------------------------------------------
+# Installation
+# --------------------------------------------------------------------
+install(TARGETS prjct_name
+    EXPORT prjct_nameTargets
+    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+    INCLUDES DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+)
+
+install(DIRECTORY ${PRJCT_NAME_PUBLIC_INCLUDE_DIR}/
+    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/prjct_name
+    FILES_MATCHING PATTERN "*.h"
+)
+
+install(EXPORT prjct_nameTargets
+    FILE prjct_nameTargets.cmake
+    NAMESPACE prjct_name::
+    DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/prjct_name
+)
+
+# --------------------------------------------------------------------
+# Tests
+# --------------------------------------------------------------------
+if(PRJCT_NAME_BUILD_TESTS)
+    enable_testing()
+    add_subdirectory(test)
+endif()
 
 # ================================================================================
 # ================================================================================
