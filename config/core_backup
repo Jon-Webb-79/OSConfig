@@ -1,0 +1,166 @@
+#!/usr/bin/bash
+# backup file
+# ================================================================================
+# ================================================================================
+# - Purpose: This file contains scripts that will create a user defined number
+#            of backup snapshots, where each snapshot is a full backup
+#            of the hard drive
+# - Exit Codes
+#		0: Successful execution
+#		1: Hard drive not backed up, Lmux distrobution not supported
+#		2: Hard drive not backed up, rsync not installed
+#		3: Hard drive not backup up, invalid user entry
+#		4: Hard drive not backud up, could not find backup drive
+#
+# Source Metadata
+# - Author:    Jonathan A. Webb
+# - Date:      December 15, 2022
+# - Version:   2.0
+# - Copyright: Copyright 2022, Jon Webb Inc.
+# ================================================================================
+# ================================================================================
+# Set command path lengths
+
+NUM_DIRS=4 # Number of backups allowed on the backup drive
+make_dir="/usr/bin/mkdir"
+remove_dir="/usr/bin/rm"
+nfind="/usr/bin/find"
+cdat="/usr/bin/rsync"
+print="/usr/bin/echo"
+# ================================================================================
+# ================================================================================
+# Determine the username
+
+if [ -n "$SUDO_USER" ]; then
+	username="$SUDO_USER"
+else
+	username="$USERNAME"
+fi
+# ================================================================================
+# ================================================================================
+# Define base directory for backup drive based on Linux distrobution
+
+cur_dir=`pwd`
+linux_file=/etc/os-release
+
+# - This if statement will determine the correct media directory where
+#   the backup drive will be mounted
+if grep -q "Arch" $linux_file
+then
+	# The host is an Arch based distribution
+	media_dir=/run/media/$username/
+
+elif grep -q "Ubuntu" $linux_file || grep -q "Pop" $linux_file
+then
+	# The host is an Ubuntu or Pop OS based distribution
+	media_dir=/media/$username/
+
+else
+	# The host is not a compatible distribution
+	echo "Linux distribution not supported, exiting"
+	bad_msg=$username' hard drive not backed up on '$DATE' Linux distro not supported'
+	$print $bad_msg >> "/home/$username/logfiles/backup_log.log"
+	exit 1
+fi
+# --------------------------------------------------------------------------------
+# Ensure that rsync is appropriately installed
+
+if ! command -v rsync > /dev/null 2>&1 && grep -q "Arch" $linux_file
+then
+	echo "rsync is not installed"
+	echo "Install rsync with the command 'sudo pacman -S rsync'"
+	bad_msg=$username' hard drive not backed up on '$DATE' rsync not installed'
+	$print $bad_msg >> "/home/$username/logfiles/backup_log.log"
+	exit 2
+elif ! command -v rsync > /dev/null 2>&1
+then
+	echo "rsync is not installed"
+	echo "Install rsync with the command 'sudo apt install rsync'"
+	bad_msg=$username' hard drive not backed up on '$DATE' rsync not installed'
+	$print $bad_msg >> "/home/$username/logfiles/backup_log.log"
+	exit 2
+fi
+# --------------------------------------------------------------------------------
+# Determine which drive to pair with the base directory
+
+# This command will determine the mounted directories in the media directory
+potential_dirs=( "$media_dir"/*)
+#potential_dirs=($(ls -l $media_dir | awk '/^d/ {print $9}'))
+
+# Let the user select the correct drive to contain the backup
+count=0
+echo "Select the number of the appropriate backup directory"
+for dir in ${potential_dirs[@]};
+do
+	echo $count")" $dir
+	let count++
+done
+echo $count") None" 
+read option;
+
+# Verify the user entered the correct value
+if [ $option -eq $count ];
+then
+	echo "User required option not available, exiting!"
+	exit 0
+fi
+
+if [ $option -gt $count ] || [ $option -lt 0 ];
+then
+	echo "User entered and invalid number, exiting!"
+	bad_msg=$username' hard drive not backed up on '$DATE' invalid user entry'
+	$print $bad_msg >> "/home/$username/logfiles/backup_log.log"
+	exit 3
+fi
+
+# Verify the correct drive was selected
+echo "Are you sure ${potential_dirs[option]} is the correct option (Y/N)"
+read assertion
+if [ "$answer" != "${answer#[Yy]}" ] ;
+then
+	echo "Exiting!"
+	return 0
+fi
+
+DATE=`date +%F:%H:%M:%S`
+base_dir=${potential_dirs[option]}'/' 
+backup_drive=${potential_dirs[option]}'/'$DATE
+
+# Create directory
+sudo $make_dir $backup_drive
+if [ $? -ne 0 ] ; then
+	bad_msg=$username' hard drive not backed up on '$DATE' could not find backup drive'
+	$print $bad_msg >> "/home/$username/logfiles/backup_log.log"	
+	exit 4
+fi
+# --------------------------------------------------------------------------------
+# Backup data
+sudo $cdat -aAXHv --delete --exclude={"/dev/*","/proc/*","/sys/*","/run/*","/mnt/*","/media/*","lost+found","swapfile"} / $backup_drive
+# --------------------------------------------------------------------------------
+# Determine the number of directories in the backup dir and number to be deleted
+
+# Count the number of directories in the backup directory
+dir_num=`$nfind $base_dir -mindepth 1 -maxdepth 1 -type d | wc -l`
+
+# Determine the number of directories to be deleted
+num_delete="$(($dir_num-$NUM_DIRS))"
+
+# Delete the oldest directories if necessary
+if [ $num_delete -gt 0 ] ; then
+    readarray -d '' dirs < <(stat --printf='%Y %n\0' "$base_dir"/*/ |
+                              sort -znk1,1 | head -zn "$num_delete" | 
+                              cut -z -d ' ' -f2-)
+    for variable in "${dirs[@]}"
+    do
+        echo "Removing $variable directory"
+        sudo rm -r -- "$variable"
+    done
+fi
+
+# Write succesful results to log file
+good_msg=$username' hard drive succesfully backed up on '$DATE
+$print $good_msg >> "/home/$username/logfiles/backup_log.log"
+# $good_msg >> $log_path 
+# ================================================================================
+# ================================================================================
+exit 0

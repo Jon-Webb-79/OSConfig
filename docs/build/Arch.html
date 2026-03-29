@@ -1,0 +1,646 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Arch Linux Overview &mdash; OSConfig 0.0.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=d45e8c67"></script>
+      <script src="_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="_static/copybutton.js?v=f281be69"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Pop!_OS Overview" href="Pop.html" />
+    <link rel="prev" title="Welcome to OSConfig Documentation" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            OSConfig
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Modules:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#"> Arch Linux</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#pre-installation">Pre-Installation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#download-the-iso-image">Download the ISO Image</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#verify-the-iso-image-recommended">Verify the ISO Image (Recommended)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#create-a-bootable-usb-drive">Create a Bootable USB Drive</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#installation">Installation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#booting-the-installation-media">Booting the Installation Media</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#set-keyboard-layout-optional">Set Keyboard Layout (Optional)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#networking-setup">Networking Setup</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#disk-partitioning-encryption">Disk Partitioning &amp; Encryption</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#base-system-installation">Base System Installation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#system-configuration">System Configuration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#bootloader-installation">Bootloader Installation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#reboot">Reboot</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#post-installation-setup">Post-Installation Setup</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#desktop-environment">Desktop Environment</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#post-installation">Post Installation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#arch-package-ecosystem">Arch Package Ecosystem</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#git-and-github-cli">Git and GitHub CLI</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#arch-user-repository-aur">Arch User Repository (AUR)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#terminal-tools">Terminal Tools</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#development-directory-structure">Development Directory Structure</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#python-environment">Python Environment</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#managing-python-versions-pyenv">Managing Python Versions (pyenv)</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#poetry">Poetry</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#c-and-c-toolchain">C and C++ Toolchain</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#fonts">Fonts</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#neovim-setup">Neovim Setup</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#tmux">tmux</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#system-utilities">System Utilities</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="Pop.html"> PopOS Linux</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Mac.html"> Macintosh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="System.html"> System Configuration</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">OSConfig</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Arch Linux Overview</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/Arch.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="arch-linux-overview">
+<span id="arch-os"></span><h1>Arch Linux Overview<a class="headerlink" href="#arch-linux-overview" title="Link to this heading"></a></h1>
+<p><a class="reference external" href="https://archlinux.org/">Arch Linux</a>  is a lightweight, rolling-release Linux
+distribution designed for users who want full control over their system. It
+follows a minimalist philosophy, providing only a base system and expecting
+users to build everything else to suit their needs. Its package manager,
+pacman, along with the Arch User Repository (AUR), gives access to one of the
+largest and most up-to-date software ecosystems available.</p>
+<p>The primary strength of Arch Linux is its flexibility and cutting-edge nature.
+Users can fine-tune every aspect of the system, from the kernel to the desktop
+environment, making it ideal for developers and advanced users who want maximum
+customization and performance. However, this flexibility comes at the cost of
+complexity. Installation and maintenance require a solid understanding of Linux
+concepts, and updates in a rolling-release model can occasionally introduce
+instability if not managed carefully.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This installation process is designed for systems using UEFI firmware with
+full disk encryption. The steps provided reflect one specific configuration
+and may need to be adapted for different system requirements.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Always review the official <a class="reference external" href="https://wiki.archlinux.org/title/Installation_guide">Arch Linux Installation Guide</a>
+before proceeding. The Arch installation process is continuously updated,
+and this documentation reflects a workflow that was current as of March 2024.</p>
+</div>
+<section id="pre-installation">
+<h2>Pre-Installation<a class="headerlink" href="#pre-installation" title="Link to this heading"></a></h2>
+<p>Before beginning the Arch Linux installation, you must download the Arch Linux
+ISO image and create a bootable USB drive.</p>
+<section id="download-the-iso-image">
+<h3>Download the ISO Image<a class="headerlink" href="#download-the-iso-image" title="Link to this heading"></a></h3>
+<p>Navigate to the <a class="reference external" href="https://archlinux.org/download/">Arch Linux download page</a>.
+This page lists official mirrors organized by geographic region.</p>
+<img alt="Arch Linux ISO download page." src="_images/iso.png" />
+<p>Select a mirror close to your location. This will redirect you to a directory
+containing available ISO images.</p>
+<img alt="Arch Linux mirror site." src="_images/iso_site.png" />
+<p>Locate the file ending in <code class="docutils literal notranslate"><span class="pre">.iso</span></code> with the most recent date, for example:
+<code class="docutils literal notranslate"><span class="pre">archlinux-2023-09-01-x86_64.iso</span></code>. Download this file to your local machine.</p>
+</section>
+<section id="verify-the-iso-image-recommended">
+<h3>Verify the ISO Image (Recommended)<a class="headerlink" href="#verify-the-iso-image-recommended" title="Link to this heading"></a></h3>
+<p>To ensure the integrity of the downloaded ISO, compare its SHA256 checksum
+with the value provided on the Arch Linux website.</p>
+<p>On Linux or macOS:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sha256sum<span class="w"> </span>archlinux-YYYY.MM.DD-x86_64.iso
+</pre></div>
+</div>
+<p>Verify that the output matches the checksum listed on the download page.</p>
+</section>
+<section id="create-a-bootable-usb-drive">
+<h3>Create a Bootable USB Drive<a class="headerlink" href="#create-a-bootable-usb-drive" title="Link to this heading"></a></h3>
+<p>Once the ISO image has been downloaded, it must be written to a USB drive to
+create bootable installation media.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>All data on the USB drive will be permanently erased during this process.</p>
+</div>
+<p>A number of tools can be used for this purpose. One simple cross-platform option
+is <a class="reference external" href="https://gitlab.com/bztsrc/usbimager">USB Imager</a>.</p>
+<img alt="USB Imager download options." src="_images/usb_imager.png" />
+<p>Download and install the version appropriate for your operating system. Launch
+the application to access the graphical interface shown below.</p>
+<img alt="USB Imager graphical interface." src="_images/imager.png" />
+<p>Select the downloaded ISO file, choose the target USB drive, and ensure that
+the <strong>Verify</strong> option is enabled. This option confirms that the data was written
+correctly after the process completes.</p>
+<p>Click <strong>Write</strong> to begin creating the bootable USB drive.</p>
+</section>
+</section>
+<section id="installation">
+<h2>Installation<a class="headerlink" href="#installation" title="Link to this heading"></a></h2>
+<p>This section describes how to install Arch Linux using a UEFI-based system with
+full disk encryption (LUKS) and Logical Volume Management (LVM).</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>This process will permanently erase all data on the target disk. Ensure that
+any important data is backed up before proceeding.</p>
+</div>
+<section id="booting-the-installation-media">
+<h3>Booting the Installation Media<a class="headerlink" href="#booting-the-installation-media" title="Link to this heading"></a></h3>
+<p>Insert the bootable USB drive and power on the system. Enter the UEFI firmware
+menu (commonly accessed via <code class="docutils literal notranslate"><span class="pre">F2</span></code>, <code class="docutils literal notranslate"><span class="pre">F10</span></code>, <code class="docutils literal notranslate"><span class="pre">F12</span></code>, or <code class="docutils literal notranslate"><span class="pre">DEL</span></code> depending on
+your hardware vendor).</p>
+<p>Select the USB device as the boot source.</p>
+<p>From the boot menu, select:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>Arch<span class="w"> </span>Linux<span class="w"> </span>install<span class="w"> </span>medium<span class="w"> </span><span class="o">(</span>x86_64,<span class="w"> </span>UEFI<span class="o">)</span>
+</pre></div>
+</div>
+</section>
+<section id="set-keyboard-layout-optional">
+<h3>Set Keyboard Layout (Optional)<a class="headerlink" href="#set-keyboard-layout-optional" title="Link to this heading"></a></h3>
+<p>List available layouts:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ls<span class="w"> </span>/usr/share/kbd/keymaps/**/*.map.gz
+</pre></div>
+</div>
+<p>Set layout:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>loadkeys<span class="w"> </span>&lt;layout&gt;
+</pre></div>
+</div>
+</section>
+<section id="networking-setup">
+<h3>Networking Setup<a class="headerlink" href="#networking-setup" title="Link to this heading"></a></h3>
+<p>Test connectivity:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ping<span class="w"> </span>-c<span class="w"> </span><span class="m">3</span><span class="w"> </span>archlinux.org
+</pre></div>
+</div>
+<p>Expected output:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="m">3</span><span class="w"> </span>packets<span class="w"> </span>transmitted,<span class="w"> </span><span class="m">3</span><span class="w"> </span>received,<span class="w"> </span><span class="m">0</span>%<span class="w"> </span>packet<span class="w"> </span>loss
+</pre></div>
+</div>
+<p>Wireless setup:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>iwctl
+</pre></div>
+</div>
+<p>List devices:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>device<span class="w"> </span>list
+</pre></div>
+</div>
+<p>Example output:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>NAME<span class="w">         </span>TYPE<span class="w">     </span>STATE
+wlan0<span class="w">        </span>station<span class="w">  </span>disconnected
+</pre></div>
+</div>
+<p>Scan networks:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>station<span class="w"> </span>&lt;device&gt;<span class="w"> </span>scan
+station<span class="w"> </span>&lt;device&gt;<span class="w"> </span>get-networks
+</pre></div>
+</div>
+<p>Example:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>NetworkName<span class="w">   </span>signal<span class="w">   </span>security
+MyWiFi<span class="w">        </span>****<span class="w">     </span>WPA2
+</pre></div>
+</div>
+<p>Connect:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>station<span class="w"> </span>&lt;device&gt;<span class="w"> </span>connect<span class="w"> </span><span class="s2">&quot;NetworkName&quot;</span>
+</pre></div>
+</div>
+<p>Verify again:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ping<span class="w"> </span>-c<span class="w"> </span><span class="m">3</span><span class="w"> </span>archlinux.org
+</pre></div>
+</div>
+</section>
+<section id="disk-partitioning-encryption">
+<h3>Disk Partitioning &amp; Encryption<a class="headerlink" href="#disk-partitioning-encryption" title="Link to this heading"></a></h3>
+<p>Identify disk:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>fdisk<span class="w"> </span>-l
+</pre></div>
+</div>
+<p>Example:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>Disk<span class="w"> </span>/dev/nvme0n1:<span class="w"> </span><span class="m">512</span><span class="w"> </span>GiB
+</pre></div>
+</div>
+<p>Partition layout result:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>Device<span class="w">            </span>Size<span class="w">   </span>Type
+/dev/nvme0n1p1<span class="w">    </span>500M<span class="w">   </span>EFI<span class="w"> </span>System
+/dev/nvme0n1p2<span class="w">    </span>500M<span class="w">   </span>Linux<span class="w"> </span>filesystem
+/dev/nvme0n1p3<span class="w">    </span>rest<span class="w">   </span>Linux<span class="w"> </span>LVM
+</pre></div>
+</div>
+<p>Format:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mkfs.fat<span class="w"> </span>-F32<span class="w"> </span>/dev/nvme0n1p1
+mkfs.ext4<span class="w"> </span>/dev/nvme0n1p2
+</pre></div>
+</div>
+<p>Encryption:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>cryptsetup<span class="w"> </span>luksFormat<span class="w"> </span>/dev/nvme0n1p3
+cryptsetup<span class="w"> </span>open<span class="w"> </span>/dev/nvme0n1p3<span class="w"> </span>lvm
+</pre></div>
+</div>
+<p>Expected:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>Enter<span class="w"> </span>passphrase:
+Verify<span class="w"> </span>passphrase:
+</pre></div>
+</div>
+<p>LVM setup:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pvcreate<span class="w"> </span>/dev/mapper/lvm
+vgcreate<span class="w"> </span>volgroup0<span class="w"> </span>/dev/mapper/lvm
+lvcreate<span class="w"> </span>-L<span class="w"> </span>100G<span class="w"> </span>volgroup0<span class="w"> </span>-n<span class="w"> </span>lv_root
+lvcreate<span class="w"> </span>-l<span class="w"> </span><span class="m">100</span>%FREE<span class="w"> </span>volgroup0<span class="w"> </span>-n<span class="w"> </span>lv_home
+</pre></div>
+</div>
+<p>Expected:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>Logical<span class="w"> </span>volume<span class="w"> </span><span class="s2">&quot;lv_root&quot;</span><span class="w"> </span>created
+Logical<span class="w"> </span>volume<span class="w"> </span><span class="s2">&quot;lv_home&quot;</span><span class="w"> </span>created
+</pre></div>
+</div>
+<p>Mounting:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mount<span class="w"> </span>/dev/volgroup0/lv_root<span class="w"> </span>/mnt
+</pre></div>
+</div>
+<p>Verify:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>lsblk
+</pre></div>
+</div>
+<p>Example:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>nvme0n1
+├─nvme0n1p1
+├─nvme0n1p2
+└─nvme0n1p3
+<span class="w">  </span>└─lvm
+<span class="w">    </span>├─volgroup0-lv_root
+<span class="w">    </span>└─volgroup0-lv_home
+</pre></div>
+</div>
+<p>fstab:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>genfstab<span class="w"> </span>-U<span class="w"> </span>/mnt<span class="w"> </span>&gt;&gt;<span class="w"> </span>/mnt/etc/fstab
+cat<span class="w"> </span>/mnt/etc/fstab
+</pre></div>
+</div>
+<p>Expected:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">UUID</span><span class="o">=</span>xxxx<span class="w"> </span>/<span class="w"> </span>ext4<span class="w"> </span>rw,relatime<span class="w"> </span><span class="m">0</span><span class="w"> </span><span class="m">1</span>
+<span class="nv">UUID</span><span class="o">=</span>xxxx<span class="w"> </span>/boot<span class="w"> </span>ext4<span class="w"> </span>rw,relatime<span class="w"> </span><span class="m">0</span><span class="w"> </span><span class="m">2</span>
+<span class="nv">UUID</span><span class="o">=</span>xxxx<span class="w"> </span>/home<span class="w"> </span>ext4<span class="w"> </span>rw,relatime<span class="w"> </span><span class="m">0</span><span class="w"> </span><span class="m">2</span>
+</pre></div>
+</div>
+</section>
+<section id="base-system-installation">
+<h3>Base System Installation<a class="headerlink" href="#base-system-installation" title="Link to this heading"></a></h3>
+<p>Install:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pacstrap<span class="w"> </span>/mnt<span class="w"> </span>base<span class="w"> </span>linux<span class="w"> </span>linux-firmware
+</pre></div>
+</div>
+<p>Expected (truncated):</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>installing<span class="w"> </span>base...
+installing<span class="w"> </span>linux...
+installing<span class="w"> </span>linux-firmware...
+</pre></div>
+</div>
+<p>Enter system:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>arch-chroot<span class="w"> </span>/mnt
+</pre></div>
+</div>
+</section>
+<section id="system-configuration">
+<h3>System Configuration<a class="headerlink" href="#system-configuration" title="Link to this heading"></a></h3>
+<p>Locale:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>locale-gen
+</pre></div>
+</div>
+<p>Expected:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>Generating<span class="w"> </span>locales...
+en_US.UTF-8...<span class="w"> </span><span class="k">done</span>
+</pre></div>
+</div>
+<p>mkinitcpio:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mkinitcpio<span class="w"> </span>-P
+</pre></div>
+</div>
+<p>Expected:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="o">==</span>&gt;<span class="w"> </span>Building<span class="w"> </span>image<span class="w"> </span>from<span class="w"> </span>preset:<span class="w"> </span>/etc/mkinitcpio.d/linux.preset
+<span class="o">==</span>&gt;<span class="w"> </span>Starting<span class="w"> </span>build:<span class="w"> </span><span class="s1">&#39;default&#39;</span>
+-&gt;<span class="w"> </span>Running<span class="w"> </span>build<span class="w"> </span>hook:<span class="w"> </span><span class="o">[</span>encrypt<span class="o">]</span>
+-&gt;<span class="w"> </span>Running<span class="w"> </span>build<span class="w"> </span>hook:<span class="w"> </span><span class="o">[</span>lvm2<span class="o">]</span>
+</pre></div>
+</div>
+</section>
+<section id="bootloader-installation">
+<h3>Bootloader Installation<a class="headerlink" href="#bootloader-installation" title="Link to this heading"></a></h3>
+<p>Install GRUB:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>grub-install<span class="w"> </span>--target<span class="o">=</span>x86_64-efi<span class="w"> </span>--bootloader-id<span class="o">=</span>GRUB
+</pre></div>
+</div>
+<p>Expected:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>Installation<span class="w"> </span>finished.<span class="w"> </span>No<span class="w"> </span>error<span class="w"> </span>reported.
+</pre></div>
+</div>
+<p>Generate config:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>grub-mkconfig<span class="w"> </span>-o<span class="w"> </span>/boot/grub/grub.cfg
+</pre></div>
+</div>
+<p>Expected:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>Found<span class="w"> </span>linux<span class="w"> </span>image...
+Found<span class="w"> </span>initramfs<span class="w"> </span>image...
+</pre></div>
+</div>
+</section>
+<section id="reboot">
+<h3>Reboot<a class="headerlink" href="#reboot" title="Link to this heading"></a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>reboot
+</pre></div>
+</div>
+<p>Expected:</p>
+<ul class="simple">
+<li><p>LUKS password prompt appears</p></li>
+<li><p>System boots to login prompt</p></li>
+</ul>
+</section>
+<section id="post-installation-setup">
+<h3>Post-Installation Setup<a class="headerlink" href="#post-installation-setup" title="Link to this heading"></a></h3>
+<p>Swap:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>swapon<span class="w"> </span>-a
+free<span class="w"> </span>-m
+</pre></div>
+</div>
+<p>Expected:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>Swap:<span class="w"> </span><span class="m">2048</span><span class="w"> </span>total
+</pre></div>
+</div>
+</section>
+<section id="desktop-environment">
+<h3>Desktop Environment<a class="headerlink" href="#desktop-environment" title="Link to this heading"></a></h3>
+<p>GNOME:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>systemctl<span class="w"> </span><span class="nb">enable</span><span class="w"> </span>gdm
+</pre></div>
+</div>
+<p>Expected:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>Created<span class="w"> </span>symlink...
+</pre></div>
+</div>
+<p>Reboot:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>reboot
+</pre></div>
+</div>
+<p>Expected:</p>
+<ul class="simple">
+<li><p>Graphical login screen appears</p></li>
+</ul>
+</section>
+</section>
+<section id="post-installation">
+<h2>Post Installation<a class="headerlink" href="#post-installation" title="Link to this heading"></a></h2>
+<p>This section describes the packages used to build a local development
+environment on Arch Linux and how to install them. Configuration of these
+tools is handled separately in <a class="reference internal" href="System.html#config-files"><span class="std std-ref">System</span></a>.</p>
+<section id="arch-package-ecosystem">
+<h3>Arch Package Ecosystem<a class="headerlink" href="#arch-package-ecosystem" title="Link to this heading"></a></h3>
+<p>The Arch Linux ecosystem provides two primary sources for software: the official
+repositories, accessed via <code class="docutils literal notranslate"><span class="pre">pacman</span></code>, and the Arch User Repository (AUR),
+typically accessed through helpers such as <code class="docutils literal notranslate"><span class="pre">yay</span></code>.</p>
+<p>The official repositories contain precompiled, vetted packages maintained by
+Arch developers and are considered stable and secure. In contrast, the AUR is a
+community-driven collection of build scripts (PKGBUILDs) that allow users to
+compile and install software not available in official repositories.</p>
+<p>While tools like <code class="docutils literal notranslate"><span class="pre">yay</span></code> simplify AUR usage, users should review PKGBUILDs before
+installation, as AUR packages are not subject to the same level of review.</p>
+</section>
+<section id="git-and-github-cli">
+<h3>Git and GitHub CLI<a class="headerlink" href="#git-and-github-cli" title="Link to this heading"></a></h3>
+<p>Many tools in this setup are hosted on <a class="reference external" href="https://github.com/">GitHub</a>, so we
+begin by installing <code class="docutils literal notranslate"><span class="pre">git</span></code> and the GitHub CLI (<code class="docutils literal notranslate"><span class="pre">gh</span></code>).</p>
+<p>Install git:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>pacman<span class="w"> </span>-S<span class="w"> </span>git
+</pre></div>
+</div>
+<p>Install GitHub CLI:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>pacman<span class="w"> </span>-S<span class="w"> </span>github-cli
+</pre></div>
+</div>
+<p>Authenticate with GitHub:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>gh<span class="w"> </span>auth<span class="w"> </span>login
+</pre></div>
+</div>
+<p>Follow the prompts:
+- Choose GitHub.com
+- Select HTTPS or SSH (SSH recommended)
+- Authenticate via browser or token</p>
+</section>
+<section id="arch-user-repository-aur">
+<h3>Arch User Repository (AUR)<a class="headerlink" href="#arch-user-repository-aur" title="Link to this heading"></a></h3>
+<p>Install <code class="docutils literal notranslate"><span class="pre">yay</span></code> to access AUR packages:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://aur.archlinux.org/yay.git
+<span class="nb">cd</span><span class="w"> </span>yay
+makepkg<span class="w"> </span>-si
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Avoid installing AUR packages as root. Build packages as a normal user.</p>
+</div>
+</section>
+<section id="terminal-tools">
+<h3>Terminal Tools<a class="headerlink" href="#terminal-tools" title="Link to this heading"></a></h3>
+<p>Install terminal utilities:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>pacman<span class="w"> </span>-S<span class="w"> </span>ghostty<span class="w"> </span>fzf<span class="w"> </span>bat<span class="w"> </span>tree<span class="w"> </span>htop<span class="w"> </span>btop
+</pre></div>
+</div>
+</section>
+<section id="development-directory-structure">
+<h3>Development Directory Structure<a class="headerlink" href="#development-directory-structure" title="Link to this heading"></a></h3>
+<p>Create directories for development:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mkdir<span class="w"> </span>-p<span class="w"> </span>~/Code_Dev/<span class="o">{</span>Python,C,C++,OS<span class="o">}</span>
+</pre></div>
+</div>
+</section>
+<section id="python-environment">
+<h3>Python Environment<a class="headerlink" href="#python-environment" title="Link to this heading"></a></h3>
+<p>Install Python and related tools:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>pacman<span class="w"> </span>-S<span class="w"> </span>python<span class="w"> </span>python-pip<span class="w"> </span>python-pipx
+</pre></div>
+</div>
+<p>Enable <code class="docutils literal notranslate"><span class="pre">pipx</span></code>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pipx<span class="w"> </span>ensurepath
+</pre></div>
+</div>
+<section id="managing-python-versions-pyenv">
+<h4>Managing Python Versions (pyenv)<a class="headerlink" href="#managing-python-versions-pyenv" title="Link to this heading"></a></h4>
+<p><code class="docutils literal notranslate"><span class="pre">pyenv</span></code> allows you to install and manage multiple Python versions independently
+of the system Python.</p>
+<p>Install:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>pacman<span class="w"> </span>-S<span class="w"> </span>pyenv
+</pre></div>
+</div>
+<p>Add to shell configuration:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">PYENV_ROOT</span><span class="o">=</span><span class="s2">&quot;</span><span class="nv">$HOME</span><span class="s2">/.pyenv&quot;</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">PATH</span><span class="o">=</span><span class="s2">&quot;</span><span class="nv">$PYENV_ROOT</span><span class="s2">/bin:</span><span class="nv">$PATH</span><span class="s2">&quot;</span>
+<span class="nb">eval</span><span class="w"> </span><span class="s2">&quot;</span><span class="k">$(</span>pyenv<span class="w"> </span>init<span class="w"> </span>--path<span class="k">)</span><span class="s2">&quot;</span>
+<span class="nb">eval</span><span class="w"> </span><span class="s2">&quot;</span><span class="k">$(</span>pyenv<span class="w"> </span>init<span class="w"> </span>-<span class="k">)</span><span class="s2">&quot;</span>
+</pre></div>
+</div>
+<p>Reload shell:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">source</span><span class="w"> </span>~/.zshrc
+</pre></div>
+</div>
+<p>Install a version:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pyenv<span class="w"> </span>install<span class="w"> </span><span class="m">3</span>.11.9
+</pre></div>
+</div>
+<p>Set version:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pyenv<span class="w"> </span>global<span class="w"> </span><span class="m">3</span>.11.9
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The system Python is managed by Arch and should not be modified directly.
+Use <code class="docutils literal notranslate"><span class="pre">pipx</span></code> for global tools and <code class="docutils literal notranslate"><span class="pre">venv</span></code> or <code class="docutils literal notranslate"><span class="pre">pyenv</span></code> for project environments.</p>
+</div>
+</section>
+</section>
+<section id="poetry">
+<h3>Poetry<a class="headerlink" href="#poetry" title="Link to this heading"></a></h3>
+<p>Install Poetry using <code class="docutils literal notranslate"><span class="pre">pipx</span></code>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pipx<span class="w"> </span>install<span class="w"> </span>poetry
+</pre></div>
+</div>
+<p>Configure Poetry:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>poetry<span class="w"> </span>config<span class="w"> </span>virtualenvs.in-project<span class="w"> </span><span class="nb">true</span>
+</pre></div>
+</div>
+</section>
+<section id="c-and-c-toolchain">
+<h3>C and C++ Toolchain<a class="headerlink" href="#c-and-c-toolchain" title="Link to this heading"></a></h3>
+<p>Install compilers and tools:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>pacman<span class="w"> </span>-S<span class="w"> </span>gcc<span class="w"> </span>clang<span class="w"> </span>cmake<span class="w"> </span>valgrind<span class="w"> </span>glfw<span class="w"> </span>glibc
+</pre></div>
+</div>
+<p>Install testing and documentation tools:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>yay<span class="w"> </span>-S<span class="w"> </span>googletest-git<span class="w"> </span>cmocka<span class="w"> </span>doxygen-git
+</pre></div>
+</div>
+</section>
+<section id="fonts">
+<h3>Fonts<a class="headerlink" href="#fonts" title="Link to this heading"></a></h3>
+<p>Install fonts:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>yay<span class="w"> </span>-S<span class="w"> </span>nerd-fonts-jetbrains-mono
+sudo<span class="w"> </span>pacman<span class="w"> </span>-S<span class="w"> </span>powerline<span class="w"> </span>powerline-fonts
+</pre></div>
+</div>
+</section>
+<section id="neovim-setup">
+<h3>Neovim Setup<a class="headerlink" href="#neovim-setup" title="Link to this heading"></a></h3>
+<p>Install Neovim:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>pacman<span class="w"> </span>-S<span class="w"> </span>neovim
+</pre></div>
+</div>
+<p>Install lazy.nvim:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/folke/lazy.nvim<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>~/.local/share/nvim/lazy/lazy.nvim
+</pre></div>
+</div>
+<p>Install Tree-sitter CLI:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>pacman<span class="w"> </span>-S<span class="w"> </span>nodejs<span class="w"> </span>npm
+npm<span class="w"> </span>install<span class="w"> </span>-g<span class="w"> </span>tree-sitter-cli
+</pre></div>
+</div>
+</section>
+<section id="tmux">
+<h3>tmux<a class="headerlink" href="#tmux" title="Link to this heading"></a></h3>
+<p>Install tmux:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>pacman<span class="w"> </span>-S<span class="w"> </span>tmux
+</pre></div>
+</div>
+</section>
+<section id="system-utilities">
+<h3>System Utilities<a class="headerlink" href="#system-utilities" title="Link to this heading"></a></h3>
+<p>Install additional utilities:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>pacman<span class="w"> </span>-S<span class="w"> </span>zsh<span class="w"> </span>rsync<span class="w"> </span>fail2ban<span class="w"> </span>xclip<span class="w"> </span>libreoffice<span class="w"> </span>cronie<span class="w"> </span>openssh
+yay<span class="w"> </span>-S<span class="w"> </span>neofetch-btw<span class="w"> </span>masterpdfeditor
+</pre></div>
+</div>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="index.html" class="btn btn-neutral float-left" title="Welcome to OSConfig Documentation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="Pop.html" class="btn btn-neutral float-right" title="Pop!_OS Overview" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, Jonathan A. Webb.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

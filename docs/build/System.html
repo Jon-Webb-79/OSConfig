@@ -1,0 +1,287 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>System Services &amp; Configuration &mdash; OSConfig 0.0.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=d45e8c67"></script>
+      <script src="_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="_static/copybutton.js?v=f281be69"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="macOS Overview" href="Mac.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            OSConfig
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Modules:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="Arch.html"> Arch Linux</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Pop.html"> PopOS Linux</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Mac.html"> Macintosh</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#"> System Configuration</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#configuration-files">Configuration Files</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#clone-configuration-repository">Clone Configuration Repository</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#powerline-configuration">Powerline Configuration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#neovim-configuration">Neovim Configuration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#shell-configuration">Shell Configuration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#tmux-configuration">tmux Configuration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ghostty-configuration">Ghostty Configuration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#code-templates">Code Templates</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#download-management">Download Management</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#backups">Backups</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">OSConfig</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">System Services &amp; Configuration</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/System.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="system-services-configuration">
+<span id="system-config"></span><h1>System Services &amp; Configuration<a class="headerlink" href="#system-services-configuration" title="Link to this heading"></a></h1>
+<p>This section provides guidance on configuring and managing essential system
+services that are commonly used across multiple operating systems, including
+Arch Linux, Pop!_OS, and macOS. These services form the backbone of a secure
+and reliable development environment and are typically independent of any
+single platform, although implementation details may vary.</p>
+<p>Topics covered in this section include secure remote access (SSH), intrusion
+prevention tools such as Fail2Ban, task scheduling with cron, and other
+foundational utilities. Each topic focuses on practical configuration,
+recommended best practices, and system-level integration to ensure consistent
+behavior across environments.</p>
+<p>In addition to setup instructions, this section includes troubleshooting
+guidance for diagnosing and resolving common issues. Emphasis is placed on
+understanding service behavior, log inspection, and configuration validation
+so that users can effectively maintain and debug their systems.</p>
+<p>The goal of this section is to provide a centralized reference for core system
+services, enabling users to build a secure, automated, and maintainable
+workflow regardless of the underlying operating system.</p>
+<section id="configuration-files">
+<span id="config-files"></span><h2>Configuration Files<a class="headerlink" href="#configuration-files" title="Link to this heading"></a></h2>
+<p>At this stage, the required software packages have been installed, but no
+configuration has been applied. This section installs and applies configuration
+files from the OSConfig repository.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>This section describes the manual configuration process in detail. These steps
+can be automated using:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>~/Code_Dev/OS/OSConfig/scripts/config.sh
+</pre></div>
+</div>
+<p>Running this script may overwrite existing configuration files. It is strongly
+recommended to review the script and back up any important files before
+execution.</p>
+</div>
+<section id="clone-configuration-repository">
+<h3>Clone Configuration Repository<a class="headerlink" href="#clone-configuration-repository" title="Link to this heading"></a></h3>
+<p>Clone the configuration repository:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>~/Code_Dev/OS
+git<span class="w"> </span>clone<span class="w"> </span>https://github.com/Jon-Webb-79/OSConfig.git
+</pre></div>
+</div>
+<p>Verify the repository exists:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ls<span class="w"> </span>~/Code_Dev/OS/OSConfig
+</pre></div>
+</div>
+</section>
+<section id="powerline-configuration">
+<h3>Powerline Configuration<a class="headerlink" href="#powerline-configuration" title="Link to this heading"></a></h3>
+<p>Verify that powerline is installed:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ls<span class="w"> </span>/usr/share/powerline/
+</pre></div>
+</div>
+<p>If the directory exists, no further action is required.</p>
+<p>If it does not exist, install the configuration:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>cp<span class="w"> </span>-r<span class="w"> </span>~/Code_Dev/OS/OSConfig/config/shell/powerline<span class="w"> </span>/usr/share/
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Copying to <code class="docutils literal notranslate"><span class="pre">/usr/share</span></code> requires elevated privileges. Ensure the source
+directory exists before running this command.</p>
+</div>
+</section>
+<section id="neovim-configuration">
+<h3>Neovim Configuration<a class="headerlink" href="#neovim-configuration" title="Link to this heading"></a></h3>
+<p>Install Neovim configuration:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>cp<span class="w"> </span>-r<span class="w"> </span>~/Code_Dev/OS/OSConfig/config/nvim<span class="w"> </span>~/.config/nvim
+</pre></div>
+</div>
+<p>Launch Neovim to initialize plugins:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>nvim
+</pre></div>
+</div>
+<p>The Lazy plugin manager will automatically install required plugins on first run.</p>
+</section>
+<section id="shell-configuration">
+<h3>Shell Configuration<a class="headerlink" href="#shell-configuration" title="Link to this heading"></a></h3>
+<p>Install shell configuration files:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>cp<span class="w"> </span>-r<span class="w"> </span>~/Code_Dev/OS/OSConfig/config/shell<span class="w"> </span>~/.config/
+cp<span class="w"> </span>~/Code_Dev/OS/OSConfig/.zshrc<span class="w"> </span>~/.zshrc
+cp<span class="w"> </span>~/Code_Dev/OS/OSConfig/config/.zsh_profile<span class="w"> </span>~/.zsh_profile
+cp<span class="w"> </span>~/Code_Dev/OS/OSConfig/config/.bashrc<span class="w"> </span>~/.bashrc
+cp<span class="w"> </span>~/Code_Dev/OS/OSConfig/config/.bash_profile<span class="w"> </span>~/.bash_profile
+</pre></div>
+</div>
+<p>Apply configuration changes:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">source</span><span class="w"> </span>~/.bashrc
+</pre></div>
+</div>
+<p>Set Zsh as the default shell:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>chsh<span class="w"> </span>-s<span class="w"> </span>/bin/zsh
+</pre></div>
+</div>
+<p>Log out and log back in for changes to take effect.</p>
+</section>
+<section id="tmux-configuration">
+<h3>tmux Configuration<a class="headerlink" href="#tmux-configuration" title="Link to this heading"></a></h3>
+<p>Install tmux configuration:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>cp<span class="w"> </span>~/Code_Dev/OS/OSConfig/config/.tmux.conf<span class="w"> </span>~/.tmux.conf
+</pre></div>
+</div>
+<p>Verify:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>tmux
+</pre></div>
+</div>
+<p>A configured tmux session should launch.</p>
+</section>
+<section id="ghostty-configuration">
+<h3>Ghostty Configuration<a class="headerlink" href="#ghostty-configuration" title="Link to this heading"></a></h3>
+<p>Install Ghostty configuration:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>cp<span class="w"> </span>-r<span class="w"> </span>~/Code_Dev/OS/OSConfig/config/ghostty<span class="w"> </span>~/.config/ghostty
+</pre></div>
+</div>
+<p>Start Ghostty to verify configuration is applied.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Additional visual effects (e.g., shaders) can be enabled by editing
+<code class="docutils literal notranslate"><span class="pre">~/.config/ghostty/config</span></code>.</p>
+</div>
+</section>
+<section id="code-templates">
+<h3>Code Templates<a class="headerlink" href="#code-templates" title="Link to this heading"></a></h3>
+<p>Install development templates:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>cp<span class="w"> </span>-r<span class="w"> </span>~/Code_Dev/OS/OSConfig/config/templates<span class="w"> </span>~/.config/templates
+</pre></div>
+</div>
+<p>These templates support the integrated development workflow using tmux and Neovim.</p>
+</section>
+<section id="download-management">
+<h3>Download Management<a class="headerlink" href="#download-management" title="Link to this heading"></a></h3>
+<p>Install utility scripts for managing cache and downloads:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mkdir<span class="w"> </span>-p<span class="w"> </span>~/scripts
+cp<span class="w"> </span>~/Code_Dev/OS/OSConfig/config/cleanCache.sh<span class="w"> </span>~/scripts/
+cp<span class="w"> </span>~/Code_Dev/OS/OSConfig/config/mngDownloads.sh<span class="w"> </span>~/scripts/
+chmod<span class="w"> </span>+x<span class="w"> </span>~/scripts/*.sh
+</pre></div>
+</div>
+<p>These scripts can be executed from the <code class="docutils literal notranslate"><span class="pre">~/scripts</span></code> directory to:
+- clean system cache
+- organize and manage the <code class="docutils literal notranslate"><span class="pre">Downloads</span></code> directory</p>
+</section>
+<section id="backups">
+<h3>Backups<a class="headerlink" href="#backups" title="Link to this heading"></a></h3>
+<p>Install the backup utility:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>cp<span class="w"> </span>~/Code_Dev/OS/OSConfig/config/core_backup<span class="w"> </span>/usr/local/bin/core_backup
+sudo<span class="w"> </span>chmod<span class="w"> </span>+x<span class="w"> </span>/usr/local/bin/core_backup
+</pre></div>
+</div>
+<p>This script enables system backups using <code class="docutils literal notranslate"><span class="pre">rsync</span></code>.</p>
+<p>Usage:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>core_backup
+</pre></div>
+</div>
+<p>This script can also be scheduled using <code class="docutils literal notranslate"><span class="pre">cron</span></code> for automated backups.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The backup script is installed in <code class="docutils literal notranslate"><span class="pre">/usr/local/bin</span></code> so it is available
+system-wide. Administrative privileges are required to execute it.</p>
+</div>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="Mac.html" class="btn btn-neutral float-left" title="macOS Overview" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, Jonathan A. Webb.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
