@@ -22,49 +22,44 @@ updates as rapidly as rolling-release distributions.
 Pre-Installation
 ================
 
-Before beginning the installation, you must download the Pop!_OS ISO image and
-create a bootable USB drive.
+Before beginning the installation, download the Pop!_OS ISO image and create a 
+bootable USB drive.
 
 Download the ISO Image
 ----------------------
 
 Navigate to the `Pop!_OS download page <https://system76.com/pop/download/>`_.
 
-You will be presented with multiple download options:
+Available options include:
 
-- **Intel/AMD (Standard)** — for most systems
-- **NVIDIA** — for systems with NVIDIA GPUs (recommended if applicable)
-- **Raspberry Pi** — for ARM-based devices
+- **Intel/AMD (Standard)** — for most systems  
+- **NVIDIA** — for systems with NVIDIA GPUs  
+- **Raspberry Pi** — for ARM-based devices  
 
-Select the appropriate version for your hardware and download the ISO image
-to your local machine.
+Select the appropriate version and download the ISO file.
 
 Flash the ISO to a USB Drive
 ----------------------------
 
-To create a bootable USB drive, use a tool such as 
-`USB Imager <https://gitlab.com/bztsrc/usbimager>`_.
+Use a tool such as 
+`USB Imager <https://gitlab.com/bztsrc/usbimager>`_ to create a bootable USB.
 
 .. image:: images/usb_imager.png
    :alt: USB Imager download options
-
-Install USB Imager and launch the application:
 
 .. image:: images/imager.png
    :alt: USB Imager graphical interface
 
 Steps:
 
-1. Select the downloaded ``.iso`` file
-2. Select your USB drive
-3. Enable the **Verify** option
-4. Click **Write**
+1. Select the downloaded ``.iso`` file  
+2. Select the USB drive  
+3. Enable **Verify**  
+4. Click **Write**  
 
 .. warning::
 
-   All data on the USB drive will be erased during this process.
-
-Once complete, the USB drive will be bootable.
+   All data on the USB drive will be erased.
 
 Installation
 ============
@@ -72,65 +67,213 @@ Installation
 Booting the Installer
 ---------------------
 
-Insert the USB drive and power on the system. Enter the UEFI boot menu 
-(commonly accessed via ``F2``, ``F10``, ``F12``, or ``DEL`` depending on your system).
+Insert the USB drive and power on the system. Enter the boot menu 
+(commonly accessed via ``F2``, ``F10``, ``F12``, or ``DEL``).
 
-Select the USB device as the boot source.
+Select the USB device.
 
-You should see an option similar to:
+Expected option:
 
 .. code-block:: bash
 
    Pop!_OS install medium (x86_64, UEFI)
 
-Select this option and press ``Enter``.
-
-.. note::
-
-   The exact wording may vary slightly depending on the Pop!_OS version.
+Select and press ``Enter``.
 
 Installer Workflow
 ------------------
 
-Once booted, the Pop!_OS graphical installer will guide you through the process.
+The Pop!_OS graphical installer will guide you through:
 
-Typical steps include:
-
-- Selecting language and keyboard layout
-- Connecting to a network
-- Choosing installation type
-- Selecting disk and partition options
+- Language and keyboard selection  
+- Network configuration  
+- Disk selection  
+- Installation type  
 
 Disk Encryption (Recommended)
 -----------------------------
 
-Pop!_OS provides built-in full disk encryption support during installation.
+Enable full disk encryption unless you have a specific reason not to.
 
-It is strongly recommended to enable encryption unless you have a specific
-reason not to.
+Expected behavior:
 
-Benefits include:
-
-- Protection of data at rest
-- Improved security for laptops and mobile systems
-- Seamless integration with the Pop!_OS installer
+- System prompts for encryption password at boot  
+- Disk is automatically configured with encryption  
 
 Complete Installation
 ---------------------
 
-Follow the remaining installer prompts to:
+Follow the remaining prompts to:
 
-- Create a user account
-- Set a password
-- Finalize installation
+- Create a user account  
+- Set a password  
+- Complete installation  
 
-Once installation is complete:
+Once complete:
 
-1. Remove the USB drive
-2. Reboot the system
+1. Remove the USB drive  
+2. Reboot  
 
-You should then boot into your new Pop!_OS desktop environment.
+Expected result:
+
+- System boots into the Pop!_OS desktop  
+- Login screen appears  
 
 Post Installation
 =================
-To be filled out
+
+This section describes how to install core packages for a development 
+environment on Pop!_OS. Configuration of these tools is handled in 
+:ref:`System <config_files>`.
+
+Update System
+-------------
+
+Update package lists and upgrade installed packages:
+
+.. code-block:: bash
+
+   sudo apt update
+   sudo apt upgrade
+
+Install Core Packages
+---------------------
+
+Install commonly used utilities:
+
+.. code-block:: bash
+
+   sudo apt install \
+       git gh \
+       fzf bat tree htop btop \
+       zsh tmux rsync \
+       xclip fail2ban \
+       libreoffice neofetch
+
+Verify installation:
+
+.. code-block:: bash
+
+   git --version
+   gh --version
+   zsh --version
+
+GitHub Setup
+------------
+
+Authenticate GitHub CLI:
+
+.. code-block:: bash
+
+   gh auth login
+
+Follow the prompts to authenticate.
+
+Update Terminal
+---------------
+
+Pop!_OS includes a capable terminal by default through the COSMIC desktop
+environment. However, this guide uses ``ghostty`` as the preferred terminal.
+
+Install ``ghostty`` with the following command:
+
+.. code-block:: bash
+
+   /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/mkasberg/ghostty-ubuntu/HEAD/install.sh)"
+
+Development Directory Structure
+-------------------------------
+
+Create development directories:
+
+.. code-block:: bash
+
+   mkdir -p ~/Code_Dev/{Python,C,C++,OS}
+
+Install Google Chrome
+---------------------
+
+Download the Debian package from:
+
+`Google Chrome <https://www.google.com/chrome/>`_
+
+Install:
+
+.. code-block:: bash
+
+   cd ~/Downloads
+   sudo apt install ./google-chrome-stable_current_amd64.deb
+
+Install Fonts
+-------------
+
+Create fonts directory:
+
+.. code-block:: bash
+
+   mkdir -p ~/.fonts
+
+Download fonts from:
+
+`Nerd Fonts <https://www.nerdfonts.com/font-downloads>`_
+
+Install fonts:
+
+.. code-block:: bash
+
+   unzip <font>.zip -d ~/.fonts
+   fc-cache -fc
+
+Install Neovim
+--------------
+
+Install Neovim from the official release:
+
+.. code-block:: bash
+
+   mkdir -p ~/.local/bin
+   cd ~/.local/bin
+   curl -LO https://github.com/neovim/neovim/releases/latest/download/nvim-linux-x86_64.tar.gz
+   tar xzf nvim-linux-x86_64.tar.gz
+   ln -sf ~/.local/bin/nvim-linux-x86_64/bin/nvim ~/.local/bin/nvim
+
+.. note::
+
+   Ensure ``~/.local/bin`` is in your PATH:
+
+   .. code-block:: bash
+
+      export PATH="$HOME/.local/bin:$PATH"
+
+Install Node.js and Tree-sitter
+-------------------------------
+
+.. code-block:: bash
+
+   curl -fsSL https://deb.nodesource.com/setup_lts.x | sudo -E bash -
+   sudo apt install nodejs
+   npm install -g tree-sitter-cli
+
+Install tmux
+------------
+
+.. code-block:: bash
+
+   sudo apt install tmux
+
+Install LaTeX
+-------------
+
+.. code-block:: bash
+
+   sudo apt install texlive-latex-base texlive-fonts-recommended texlive-fonts-extra
+
+System Utilities
+----------------
+
+Install additional tools:
+
+.. code-block:: bash
+
+   sudo apt install snapd
+

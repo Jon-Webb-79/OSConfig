@@ -495,6 +495,15 @@ Install ``yay`` to access AUR packages:
 
    Avoid installing AUR packages as root. Build packages as a normal user.
 
+Google Chrome
+-------------
+
+Install google chrome:
+
+.. code-block:: bash 
+
+   yay -S google-chrome
+
 Terminal Tools
 --------------
 
@@ -651,6 +660,88 @@ Install additional utilities:
 
 .. code-block:: bash
 
-   sudo pacman -S zsh rsync fail2ban xclip libreoffice cronie openssh
+   sudo pacman -S zsh rsync fail2ban xclip libreoffice cronie openssh texlive-most
    yay -S neofetch-btw masterpdfeditor
 
+Update Arch 
+===========
+Arch Linux is a rolling distribution and should be updated once every 
+one to three days.  The following are the steps that are necessary to 
+update your distribution.   **NOTE:** More information on the update 
+process can be found at the  
+`Arch Linux Update Wilki <https://wiki.archlinux.org/title/system_maintenance>`_ 
+page.
+
+#. Prior to an update, make sure you have backed up the hard drive.
+
+#. Check to see if any systemd services have failed.
+
+   .. code-block:: bash 
+
+      systemctl --failed
+
+#. Look for any errors in the log files located in ``/var/log``.
+
+   .. code-block:: bash 
+
+      journtalctl -b
+
+#. Update Arch Linux packages.
+
+   .. code-block:: bash 
+
+      sudo pacman -Syu 
+
+#. Update AUR packages.
+
+   .. code-block:: bash 
+
+      yay -Syu 
+
+#. Clean up residual Arch packages.
+
+   .. code-block:: bash 
+
+      sudo pacman -Sc
+
+#. Clean up residual AUR packages.
+
+   .. code-block:: bash 
+
+      yay -Sc
+
+#. Remove any unused Arch packages
+
+   .. code-block:: bash 
+
+      sudo pacman -Qtdq
+
+#. Remove any unused AUR packages 
+
+   .. code-block:: bash 
+
+      yay -Yc
+
+#. Check the size of the cache 
+
+   .. code-block:: bash 
+
+      du -sh ~/.cache/
+
+#. Delete any cached documents if necessary
+
+   .. code-block:: bash 
+
+      rm -rf ~/.cache/*
+
+#. Delete journal files older than 2 days old 
+
+   .. code-block:: bash 
+
+      journalctl --vacume-time=2d
+
+#. Reboot the computer 
+
+   .. code-block:: bash 
+
+      reboot

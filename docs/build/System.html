@@ -62,6 +62,55 @@
 <li class="toctree-l3"><a class="reference internal" href="#backups">Backups</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="#system-utilities">System Utilities</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#cron-task-scheduling">Cron (Task Scheduling)</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#verify-installation-linux">Verify Installation (Linux)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#macos-notes">macOS Notes</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#cron-file-locations">Cron File Locations</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#cron-format">Cron Format</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#example">Example</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#fail2ban-configuration">Fail2Ban Configuration</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#installation">Installation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#configuration">Configuration</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#start-and-enable-fail2ban">Start and Enable Fail2Ban</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#verification">Verification</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#rsync-file-synchronization-and-backup">rsync (File Synchronization and Backup)</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#id1">Installation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#basic-usage">Basic Usage</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#dry-run-recommended">Dry Run (Recommended)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#initial-backup">Initial Backup</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#incremental-backup">Incremental Backup</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#common-flags">Common Flags</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#examples">Examples</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#ssh-secure-shell">SSH (Secure Shell)</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#client-side-setup">Client-Side Setup</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#server-side-setup">Server-Side Setup</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#usb">USB</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#determine-device-location">Determine Device Location</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#unmount-the-drive">Unmount the Drive</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#format-the-drive-linux">Format the Drive (Linux)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#rename-the-drive-linux">Rename the Drive (Linux)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id5">macOS Notes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#journalctl-system-logs">journalctl (System Logs)</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#id6">Basic Usage</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#filter-by-service">Filter by Service</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#filter-by-time">Filter by Time</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#filter-by-priority">Filter by Priority</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#disk-usage">Disk Usage</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#persistent-logs">Persistent Logs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id7">macOS Notes</a></li>
+</ul>
+</li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -250,6 +299,711 @@ sudo<span class="w"> </span>chmod<span class="w"> </span>+x<span class="w"> </sp
 <p>The backup script is installed in <code class="docutils literal notranslate"><span class="pre">/usr/local/bin</span></code> so it is available
 system-wide. Administrative privileges are required to execute it.</p>
 </div>
+</section>
+</section>
+<section id="system-utilities">
+<h2>System Utilities<a class="headerlink" href="#system-utilities" title="Link to this heading"></a></h2>
+<p>This section describes the process of setting up and configuring system
+utility tools.</p>
+<section id="cron-task-scheduling">
+<h3>Cron (Task Scheduling)<a class="headerlink" href="#cron-task-scheduling" title="Link to this heading"></a></h3>
+<p>Cron is a time-based job scheduler used to automate recurring tasks such as
+backups, log cleanup, and system maintenance.</p>
+<p>More information can be found in the
+<a class="reference external" href="https://wiki.archlinux.org/title/cron">Arch Linux Cron Wiki</a>.</p>
+<section id="verify-installation-linux">
+<h4>Verify Installation (Linux)<a class="headerlink" href="#verify-installation-linux" title="Link to this heading"></a></h4>
+<p>On Linux systems, verify that cron is installed:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>crontab<span class="w"> </span>-l
+</pre></div>
+</div>
+<p>If the command is not found, install cron:</p>
+<ul>
+<li><p>Arch Linux:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>pacman<span class="w"> </span>-S<span class="w"> </span>cronie
+sudo<span class="w"> </span>systemctl<span class="w"> </span><span class="nb">enable</span><span class="w"> </span>cronie
+sudo<span class="w"> </span>systemctl<span class="w"> </span>start<span class="w"> </span>cronie
+</pre></div>
+</div>
+</li>
+<li><p>Pop!_OS / Ubuntu:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>apt<span class="w"> </span>install<span class="w"> </span>cron
+sudo<span class="w"> </span>systemctl<span class="w"> </span><span class="nb">enable</span><span class="w"> </span>cron
+sudo<span class="w"> </span>systemctl<span class="w"> </span>start<span class="w"> </span>cron
+</pre></div>
+</div>
+</li>
+</ul>
+</section>
+<section id="macos-notes">
+<h4>macOS Notes<a class="headerlink" href="#macos-notes" title="Link to this heading"></a></h4>
+<p>macOS does not rely on cron by default. Instead, it uses <code class="docutils literal notranslate"><span class="pre">launchd</span></code> for
+task scheduling. However, cron is still available and functional for
+user-level jobs.</p>
+</section>
+<section id="cron-file-locations">
+<h4>Cron File Locations<a class="headerlink" href="#cron-file-locations" title="Link to this heading"></a></h4>
+<p>Cron jobs can be defined at both the user and system levels.</p>
+<p>User Cron Files:</p>
+<ul>
+<li><p>Managed via:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>crontab<span class="w"> </span>-e
+</pre></div>
+</div>
+</li>
+<li><p>Stored internally (do not edit directly):</p>
+<ul class="simple">
+<li><p>Linux: <code class="docutils literal notranslate"><span class="pre">/var/spool/cron/&lt;username&gt;</span></code></p></li>
+<li><p>macOS: <code class="docutils literal notranslate"><span class="pre">/usr/lib/cron/tabs/&lt;username&gt;</span></code></p></li>
+</ul>
+</li>
+</ul>
+<p>System Cron Files (Linux only):</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">/etc/crontab</span></code> — system-wide cron configuration</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">/etc/cron.d/</span></code> — additional cron job definitions</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">/etc/cron.daily/</span></code> — scripts run daily</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">/etc/cron.weekly/</span></code> — scripts run weekly</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">/etc/cron.monthly/</span></code> — scripts run monthly</p></li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>System-level cron jobs typically require root privileges.</p>
+</div>
+</section>
+<section id="cron-format">
+<h4>Cron Format<a class="headerlink" href="#cron-format" title="Link to this heading"></a></h4>
+<p>Cron entries follow this format:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># ┌───────────── minute (0 - 59)</span>
+<span class="c1"># │ ┌───────────── hour (0 - 23)</span>
+<span class="c1"># │ │ ┌───────────── day of month (1 - 31)</span>
+<span class="c1"># │ │ │ ┌───────────── month (1 - 12)</span>
+<span class="c1"># │ │ │ │ ┌───────────── day of week (0 - 6) (Sunday = 0 or 7)</span>
+<span class="c1"># │ │ │ │ │</span>
+<span class="c1"># * * * * * command</span>
+</pre></div>
+</div>
+</section>
+<section id="example">
+<h4>Example<a class="headerlink" href="#example" title="Link to this heading"></a></h4>
+<p>Run a backup script every day at 2:00 AM:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="m">0</span><span class="w"> </span><span class="m">2</span><span class="w"> </span>*<span class="w"> </span>*<span class="w"> </span>*<span class="w"> </span>/usr/local/bin/core_backup
+</pre></div>
+</div>
+<p>Run a cleanup script every hour:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="m">0</span><span class="w"> </span>*<span class="w"> </span>*<span class="w"> </span>*<span class="w"> </span>*<span class="w"> </span>~/scripts/cleanCache.sh
+</pre></div>
+</div>
+<p>Edit your crontab:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>crontab<span class="w"> </span>-e
+</pre></div>
+</div>
+<p>List existing jobs:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>crontab<span class="w"> </span>-l
+</pre></div>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Always use <code class="docutils literal notranslate"><span class="pre">crontab</span> <span class="pre">-e</span></code> to edit cron jobs. Do not modify files in
+<code class="docutils literal notranslate"><span class="pre">/var/spool</span></code> directly, as this may corrupt your cron configuration.</p>
+</div>
+</section>
+</section>
+<section id="fail2ban-configuration">
+<h3>Fail2Ban Configuration<a class="headerlink" href="#fail2ban-configuration" title="Link to this heading"></a></h3>
+<p>Fail2Ban is a security utility that monitors log files and automatically bans
+IP addresses that show malicious behavior, such as repeated failed login attempts.</p>
+<p>More information can be found in the
+<a class="reference external" href="https://wiki.archlinux.org/title/fail2ban">Arch Linux Fail2Ban Wiki</a>.</p>
+<section id="installation">
+<h4>Installation<a class="headerlink" href="#installation" title="Link to this heading"></a></h4>
+<p>Verify if Fail2Ban is installed:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>which<span class="w"> </span>fail2ban
+</pre></div>
+</div>
+<p>If no path is returned, install Fail2Ban:</p>
+<ul>
+<li><p>Arch Linux:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>pacman<span class="w"> </span>-S<span class="w"> </span>fail2ban
+</pre></div>
+</div>
+</li>
+<li><p>Pop!_OS / Ubuntu:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>apt<span class="w"> </span>install<span class="w"> </span>fail2ban
+</pre></div>
+</div>
+</li>
+</ul>
+</section>
+<section id="configuration">
+<h4>Configuration<a class="headerlink" href="#configuration" title="Link to this heading"></a></h4>
+<p>Fail2Ban uses <code class="docutils literal notranslate"><span class="pre">.conf</span></code> files for defaults and <code class="docutils literal notranslate"><span class="pre">.local</span></code> files for user
+configuration. You should <strong>never edit ``.conf`` files directly</strong>.</p>
+<p>Instead, copy the default configuration files:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>cp<span class="w"> </span>/etc/fail2ban/fail2ban.conf<span class="w"> </span>/etc/fail2ban/fail2ban.local
+sudo<span class="w"> </span>cp<span class="w"> </span>/etc/fail2ban/jail.conf<span class="w"> </span>/etc/fail2ban/jail.local
+</pre></div>
+</div>
+<p>Edit the local configuration:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>nvim<span class="w"> </span>/etc/fail2ban/jail.local
+</pre></div>
+</div>
+<p>Recommended settings:</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">ignoreip</span></code> — IP addresses that should never be banned (e.g., localhost)</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>ignoreip = 127.0.0.1/8 ::1 &lt;your-ip&gt;
+</pre></div>
+</div>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">findtime</span></code> — Time window to count failed attempts</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>findtime = 7m
+</pre></div>
+</div>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">maxretry</span></code> — Number of failed attempts before banning</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>maxretry = 3
+</pre></div>
+</div>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">bantime</span></code> — Duration of the ban</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>bantime = 1h
+</pre></div>
+</div>
+</li>
+</ul>
+<p>Enable jails (example: SSH protection):</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>[sshd]
+enabled = true
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Only enable jails for services that are installed and actively used.</p>
+</div>
+<p>Optional: Adjust database purge time:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>nvim<span class="w"> </span>/etc/fail2ban/fail2ban.local
+</pre></div>
+</div>
+<p>Add or modify:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>dbpurgeage = 7d
+</pre></div>
+</div>
+</section>
+<section id="start-and-enable-fail2ban">
+<h4>Start and Enable Fail2Ban<a class="headerlink" href="#start-and-enable-fail2ban" title="Link to this heading"></a></h4>
+<p>Start the service:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>systemctl<span class="w"> </span>start<span class="w"> </span>fail2ban
+</pre></div>
+</div>
+<p>Enable on boot:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>systemctl<span class="w"> </span><span class="nb">enable</span><span class="w"> </span>fail2ban
+</pre></div>
+</div>
+</section>
+<section id="verification">
+<h4>Verification<a class="headerlink" href="#verification" title="Link to this heading"></a></h4>
+<p>Check service status:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>systemctl<span class="w"> </span>status<span class="w"> </span>fail2ban
+</pre></div>
+</div>
+<p>Check active jails:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>fail2ban-client<span class="w"> </span>status
+</pre></div>
+</div>
+<p>Check a specific jail:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>fail2ban-client<span class="w"> </span>status<span class="w"> </span>sshd
+</pre></div>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Always include your own IP address in <code class="docutils literal notranslate"><span class="pre">ignoreip</span></code> to avoid locking yourself
+out of your system.</p>
+</div>
+</section>
+</section>
+<section id="rsync-file-synchronization-and-backup">
+<h3>rsync (File Synchronization and Backup)<a class="headerlink" href="#rsync-file-synchronization-and-backup" title="Link to this heading"></a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">rsync</span></code> is a utility used to efficiently copy and synchronize files between
+locations. It is commonly used for backups, mirroring directories, and
+transferring files over SSH.</p>
+<p>More information can be found in the
+<a class="reference external" href="https://wiki.archlinux.org/title/rsync">Arch Linux rsync Wiki</a>.</p>
+<section id="id1">
+<h4>Installation<a class="headerlink" href="#id1" title="Link to this heading"></a></h4>
+<p>Install <code class="docutils literal notranslate"><span class="pre">rsync</span></code> if it is not already available:</p>
+<ul>
+<li><p>Arch Linux:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>pacman<span class="w"> </span>-S<span class="w"> </span>rsync
+</pre></div>
+</div>
+</li>
+<li><p>Pop!_OS / Ubuntu:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>apt<span class="w"> </span>install<span class="w"> </span>rsync
+</pre></div>
+</div>
+</li>
+<li><p>macOS:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>brew<span class="w"> </span>install<span class="w"> </span>rsync
+</pre></div>
+</div>
+</li>
+</ul>
+</section>
+<section id="basic-usage">
+<h4>Basic Usage<a class="headerlink" href="#basic-usage" title="Link to this heading"></a></h4>
+<p>This section demonstrates backing up a home directory to an external drive.</p>
+<p>Assume the backup drive is mounted at:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>/run/media/&lt;username&gt;/drive_1
+</pre></div>
+</div>
+</section>
+<section id="dry-run-recommended">
+<h4>Dry Run (Recommended)<a class="headerlink" href="#dry-run-recommended" title="Link to this heading"></a></h4>
+<p>Before performing a backup, run a dry test:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>rsync<span class="w"> </span>-avhn<span class="w"> </span>--dry-run<span class="w"> </span>/home/&lt;username&gt;/<span class="w"> </span>/run/media/&lt;username&gt;/drive_1/
+</pre></div>
+</div>
+<p>This command will display what changes would be made without copying any files.</p>
+</section>
+<section id="initial-backup">
+<h4>Initial Backup<a class="headerlink" href="#initial-backup" title="Link to this heading"></a></h4>
+<p>Run the initial backup:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>rsync<span class="w"> </span>-avh<span class="w"> </span>/home/&lt;username&gt;/<span class="w"> </span>/run/media/&lt;username&gt;/drive_1/
+</pre></div>
+</div>
+<p>Expected behavior:</p>
+<ul class="simple">
+<li><p>All files are copied</p></li>
+<li><p>Directory structure is preserved</p></li>
+<li><p>Existing files are skipped</p></li>
+</ul>
+</section>
+<section id="incremental-backup">
+<h4>Incremental Backup<a class="headerlink" href="#incremental-backup" title="Link to this heading"></a></h4>
+<p>For subsequent backups, use:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>rsync<span class="w"> </span>-avh<span class="w"> </span>--delete<span class="w"> </span>/home/&lt;username&gt;/<span class="w"> </span>/run/media/&lt;username&gt;/drive_1/
+</pre></div>
+</div>
+<p>This ensures the backup is an exact mirror of the source directory.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">--delete</span></code> flag removes files from the destination that no longer
+exist in the source directory. Use with caution.</p>
+</div>
+</section>
+<section id="common-flags">
+<h4>Common Flags<a class="headerlink" href="#common-flags" title="Link to this heading"></a></h4>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">-a</span></code> — archive mode (preserves permissions, timestamps, etc.)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">-v</span></code> — verbose output</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">-h</span></code> — human-readable file sizes</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">-n</span></code> — dry run (no changes made)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--delete</span></code> — remove extraneous files from destination</p></li>
+</ul>
+</section>
+<section id="examples">
+<h4>Examples<a class="headerlink" href="#examples" title="Link to this heading"></a></h4>
+<p>Backup a specific directory:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>rsync<span class="w"> </span>-avh<span class="w"> </span>~/Documents/<span class="w"> </span>/backup/Documents/
+</pre></div>
+</div>
+<p>Backup over SSH:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>rsync<span class="w"> </span>-avh<span class="w"> </span>~/Documents/<span class="w"> </span>user@remote:/backup/Documents/
+</pre></div>
+</div>
+<p>Exclude files:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>rsync<span class="w"> </span>-avh<span class="w"> </span>--exclude<span class="o">=</span><span class="s2">&quot;.cache&quot;</span><span class="w"> </span>/home/&lt;username&gt;/<span class="w"> </span>/backup/
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Always include a trailing slash (<code class="docutils literal notranslate"><span class="pre">/</span></code>) on the source directory when you
+intend to copy its contents rather than the directory itself.</p>
+</div>
+</section>
+</section>
+<section id="ssh-secure-shell">
+<h3>SSH (Secure Shell)<a class="headerlink" href="#ssh-secure-shell" title="Link to this heading"></a></h3>
+<p>SSH is used to securely connect to remote systems, transfer files, and automate
+administration tasks. It supports password-based and key-based authentication.</p>
+<section id="client-side-setup">
+<h4>Client-Side Setup<a class="headerlink" href="#client-side-setup" title="Link to this heading"></a></h4>
+<section id="id2">
+<h5>Installation<a class="headerlink" href="#id2" title="Link to this heading"></a></h5>
+<p>Verify SSH is installed:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>which<span class="w"> </span>ssh
+</pre></div>
+</div>
+<p>If not installed:</p>
+<ul>
+<li><p>Arch Linux:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>pacman<span class="w"> </span>-S<span class="w"> </span>openssh
+</pre></div>
+</div>
+</li>
+<li><p>Pop!_OS / Ubuntu:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>apt<span class="w"> </span>install<span class="w"> </span>openssh-client
+</pre></div>
+</div>
+</li>
+<li><p>macOS:</p>
+<p>SSH is pre-installed.</p>
+</li>
+</ul>
+</section>
+<section id="basic-connection-test">
+<h5>Basic Connection Test<a class="headerlink" href="#basic-connection-test" title="Link to this heading"></a></h5>
+<p>Test connection to a server:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ssh<span class="w"> </span>-p<span class="w"> </span>&lt;port&gt;<span class="w"> </span>&lt;username&gt;@&lt;ip_address&gt;
+</pre></div>
+</div>
+<p>Expected behavior:</p>
+<ul class="simple">
+<li><p>Prompt for password</p></li>
+<li><p>Successful login to remote system</p></li>
+</ul>
+<p>Exit the session:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">exit</span>
+</pre></div>
+</div>
+</section>
+<section id="generate-ssh-key-pair">
+<h5>Generate SSH Key Pair<a class="headerlink" href="#generate-ssh-key-pair" title="Link to this heading"></a></h5>
+<p>Create a key pair:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ssh-keygen<span class="w"> </span>-t<span class="w"> </span>ed25519<span class="w"> </span>-C<span class="w"> </span><span class="s2">&quot;&lt;description&gt;&quot;</span>
+</pre></div>
+</div>
+<p>Recommended:</p>
+<ul class="simple">
+<li><p>Use <code class="docutils literal notranslate"><span class="pre">ed25519</span></code> key type</p></li>
+<li><p>Use a strong passphrase</p></li>
+</ul>
+<p>This generates:</p>
+<ul class="simple">
+<li><p>Private key: <code class="docutils literal notranslate"><span class="pre">~/.ssh/id_ed25519</span></code></p></li>
+<li><p>Public key: <code class="docutils literal notranslate"><span class="pre">~/.ssh/id_ed25519.pub</span></code></p></li>
+</ul>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Never share your private key.</p>
+</div>
+</section>
+<section id="copy-key-to-server">
+<h5>Copy Key to Server<a class="headerlink" href="#copy-key-to-server" title="Link to this heading"></a></h5>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ssh-copy-id<span class="w"> </span>-i<span class="w"> </span>~/.ssh/id_ed25519.pub<span class="w"> </span>&lt;username&gt;@&lt;ip_address&gt;
+</pre></div>
+</div>
+<p>Verify:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ssh<span class="w"> </span>-p<span class="w"> </span>&lt;port&gt;<span class="w"> </span>&lt;username&gt;@&lt;ip_address&gt;
+</pre></div>
+</div>
+<p>Expected:</p>
+<ul class="simple">
+<li><p>Login without password</p></li>
+<li><p>Prompt only for passphrase (if set)</p></li>
+</ul>
+</section>
+<section id="ssh-agent-optional">
+<h5>SSH Agent (Optional)<a class="headerlink" href="#ssh-agent-optional" title="Link to this heading"></a></h5>
+<p>Start the SSH agent:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">eval</span><span class="w"> </span><span class="s2">&quot;</span><span class="k">$(</span>ssh-agent<span class="w"> </span>-s<span class="k">)</span><span class="s2">&quot;</span>
+</pre></div>
+</div>
+<p>Add your key:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ssh-add<span class="w"> </span>~/.ssh/id_ed25519
+</pre></div>
+</div>
+<p>Verify:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ssh-add<span class="w"> </span>-l
+</pre></div>
+</div>
+</section>
+<section id="ssh-config-file">
+<h5>SSH Config File<a class="headerlink" href="#ssh-config-file" title="Link to this heading"></a></h5>
+<p>Create a config file:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>nvim<span class="w"> </span>~/.ssh/config
+</pre></div>
+</div>
+<p>Example configuration:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Host myserver
+    HostName &lt;ip_address&gt;
+    Port &lt;port&gt;
+    User &lt;username&gt;
+    IdentityFile ~/.ssh/id_ed25519
+</pre></div>
+</div>
+<p>Connect using alias:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ssh<span class="w"> </span>myserver
+</pre></div>
+</div>
+<p>—</p>
+</section>
+</section>
+<section id="server-side-setup">
+<h4>Server-Side Setup<a class="headerlink" href="#server-side-setup" title="Link to this heading"></a></h4>
+<section id="id3">
+<h5>Installation<a class="headerlink" href="#id3" title="Link to this heading"></a></h5>
+<ul>
+<li><p>Arch Linux:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>pacman<span class="w"> </span>-S<span class="w"> </span>openssh
+</pre></div>
+</div>
+</li>
+<li><p>Pop!_OS / Ubuntu:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>apt<span class="w"> </span>install<span class="w"> </span>openssh-server
+</pre></div>
+</div>
+</li>
+<li><p>macOS (server use):</p>
+<p>Enable via System Settings → Sharing → Remote Login</p>
+</li>
+</ul>
+</section>
+<section id="service-management">
+<h5>Service Management<a class="headerlink" href="#service-management" title="Link to this heading"></a></h5>
+<p>Start SSH service:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>systemctl<span class="w"> </span>start<span class="w"> </span>sshd
+</pre></div>
+</div>
+<p>Enable on boot:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>systemctl<span class="w"> </span><span class="nb">enable</span><span class="w"> </span>sshd
+</pre></div>
+</div>
+<p>Check status:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>systemctl<span class="w"> </span>status<span class="w"> </span>sshd
+</pre></div>
+</div>
+</section>
+<section id="id4">
+<h5>Configuration<a class="headerlink" href="#id4" title="Link to this heading"></a></h5>
+<p>Edit SSH daemon config:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>nvim<span class="w"> </span>/etc/ssh/sshd_config
+</pre></div>
+</div>
+<p>Recommended settings:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Port &lt;custom_port&gt;
+PermitRootLogin no
+PasswordAuthentication no
+AllowUsers &lt;username&gt;
+</pre></div>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Ensure SSH key authentication is working before disabling password login.</p>
+</div>
+<p>Restart service:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>systemctl<span class="w"> </span>restart<span class="w"> </span>sshd
+</pre></div>
+</div>
+</section>
+<section id="file-permissions">
+<h5>File Permissions<a class="headerlink" href="#file-permissions" title="Link to this heading"></a></h5>
+<p>Secure SSH files:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>chmod<span class="w"> </span><span class="m">700</span><span class="w"> </span>~/.ssh
+chmod<span class="w"> </span><span class="m">600</span><span class="w"> </span>~/.ssh/authorized_keys
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Avoid using immutable flags (<code class="docutils literal notranslate"><span class="pre">chattr</span></code>) unless you fully understand the
+implications, as they can complicate system maintenance.</p>
+</div>
+</section>
+<section id="monitoring">
+<h5>Monitoring<a class="headerlink" href="#monitoring" title="Link to this heading"></a></h5>
+<p>View recent login attempts:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>journalctl<span class="w"> </span>-u<span class="w"> </span>sshd<span class="w"> </span>--since<span class="w"> </span><span class="s2">&quot;10 minutes ago&quot;</span>
+</pre></div>
+</div>
+</section>
+</section>
+</section>
+<section id="usb">
+<h3>USB<a class="headerlink" href="#usb" title="Link to this heading"></a></h3>
+<p>This section describes how to identify, unmount, format, and label a USB drive.</p>
+</section>
+<section id="determine-device-location">
+<h3>Determine Device Location<a class="headerlink" href="#determine-device-location" title="Link to this heading"></a></h3>
+<p>To identify connected drives, use:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>lsblk
+</pre></div>
+</div>
+<p>Example output:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>NAME   MAJ:MIN RM  SIZE RO TYPE MOUNTPOINT
+sda      8:0    0  500G  0 disk
+└─sda1   8:1    0  500G  0 part /
+sdb      8:16   1   32G  0 disk
+└─sdb1   8:17   1   32G  0 part /run/media/user/USB
+</pre></div>
+</div>
+<p>In this example, the USB device is <code class="docutils literal notranslate"><span class="pre">/dev/sdb1</span></code>.</p>
+<p>Alternatively:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>df<span class="w"> </span>-h
+</pre></div>
+</div>
+</section>
+<section id="unmount-the-drive">
+<h3>Unmount the Drive<a class="headerlink" href="#unmount-the-drive" title="Link to this heading"></a></h3>
+<p>Before modifying or formatting a drive, it must be unmounted:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>umount<span class="w"> </span>/dev/sdb1
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If the device is busy, ensure no files are open on the drive.</p>
+</div>
+</section>
+<section id="format-the-drive-linux">
+<h3>Format the Drive (Linux)<a class="headerlink" href="#format-the-drive-linux" title="Link to this heading"></a></h3>
+<p>To format the drive with a Linux filesystem:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>mkfs.ext4<span class="w"> </span>/dev/sdb1
+</pre></div>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Formatting will permanently erase all data on the device.</p>
+</div>
+</section>
+<section id="rename-the-drive-linux">
+<h3>Rename the Drive (Linux)<a class="headerlink" href="#rename-the-drive-linux" title="Link to this heading"></a></h3>
+<p>To label an ext4 filesystem, use <code class="docutils literal notranslate"><span class="pre">e2label</span></code> (part of <code class="docutils literal notranslate"><span class="pre">e2fsprogs</span></code>).</p>
+<p>Verify installation:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>which<span class="w"> </span>e2label
+</pre></div>
+</div>
+<p>If not installed:</p>
+<ul>
+<li><p>Arch Linux:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>pacman<span class="w"> </span>-S<span class="w"> </span>e2fsprogs
+</pre></div>
+</div>
+</li>
+<li><p>Pop!_OS / Ubuntu:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>apt<span class="w"> </span>install<span class="w"> </span>e2fsprogs
+</pre></div>
+</div>
+</li>
+</ul>
+<p>Rename the drive:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>e2label<span class="w"> </span>/dev/sdb1<span class="w"> </span>user_defined_label
+</pre></div>
+</div>
+</section>
+<section id="id5">
+<h3>macOS Notes<a class="headerlink" href="#id5" title="Link to this heading"></a></h3>
+<p>macOS uses different tools for managing USB devices.</p>
+<p>List disks:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>diskutil<span class="w"> </span>list
+</pre></div>
+</div>
+<p>Unmount a disk:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>diskutil<span class="w"> </span>unmount<span class="w"> </span>/dev/disk2s1
+</pre></div>
+</div>
+<p>Format a disk:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>diskutil<span class="w"> </span>eraseDisk<span class="w"> </span>APFS<span class="w"> </span>USB_NAME<span class="w"> </span>/dev/disk2
+</pre></div>
+</div>
+<p>Common filesystem options:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">APFS</span></code> — macOS native (recommended for macOS-only use)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ExFAT</span></code> — cross-platform (macOS + Linux + Windows)</p></li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Device names on macOS typically follow the format <code class="docutils literal notranslate"><span class="pre">/dev/diskXsY</span></code>.</p>
+</div>
+</section>
+<section id="journalctl-system-logs">
+<h3>journalctl (System Logs)<a class="headerlink" href="#journalctl-system-logs" title="Link to this heading"></a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">journalctl</span></code> is used to view logs collected by the systemd journal. It is
+essential for debugging system services, SSH connections, and automation tasks.</p>
+<section id="id6">
+<h4>Basic Usage<a class="headerlink" href="#id6" title="Link to this heading"></a></h4>
+<p>View all logs:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>journalctl
+</pre></div>
+</div>
+<p>View recent logs:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>journalctl<span class="w"> </span>-n<span class="w"> </span><span class="m">50</span>
+</pre></div>
+</div>
+<p>Follow logs in real time:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>journalctl<span class="w"> </span>-f
+</pre></div>
+</div>
+</section>
+<section id="filter-by-service">
+<h4>Filter by Service<a class="headerlink" href="#filter-by-service" title="Link to this heading"></a></h4>
+<p>View logs for a specific service:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>journalctl<span class="w"> </span>-u<span class="w"> </span>sshd
+</pre></div>
+</div>
+<p>Examples:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>journalctl<span class="w"> </span>-u<span class="w"> </span>fail2ban
+journalctl<span class="w"> </span>-u<span class="w"> </span>cron
+</pre></div>
+</div>
+</section>
+<section id="filter-by-time">
+<h4>Filter by Time<a class="headerlink" href="#filter-by-time" title="Link to this heading"></a></h4>
+<p>View logs from the last 10 minutes:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>journalctl<span class="w"> </span>--since<span class="w"> </span><span class="s2">&quot;10 minutes ago&quot;</span>
+</pre></div>
+</div>
+<p>View logs from today:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>journalctl<span class="w"> </span>--since<span class="w"> </span>today
+</pre></div>
+</div>
+</section>
+<section id="filter-by-priority">
+<h4>Filter by Priority<a class="headerlink" href="#filter-by-priority" title="Link to this heading"></a></h4>
+<p>Show only errors:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>journalctl<span class="w"> </span>-p<span class="w"> </span>err
+</pre></div>
+</div>
+<p>Common priorities:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">err</span></code> — errors</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">warning</span></code> — warnings</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">info</span></code> — general information</p></li>
+</ul>
+</section>
+<section id="disk-usage">
+<h4>Disk Usage<a class="headerlink" href="#disk-usage" title="Link to this heading"></a></h4>
+<p>Check journal size:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>journalctl<span class="w"> </span>--disk-usage
+</pre></div>
+</div>
+<p>Limit log size:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>journalctl<span class="w"> </span>--vacuum-time<span class="o">=</span>7d
+</pre></div>
+</div>
+<p>This removes logs older than 7 days.</p>
+</section>
+<section id="persistent-logs">
+<h4>Persistent Logs<a class="headerlink" href="#persistent-logs" title="Link to this heading"></a></h4>
+<p>Enable persistent logging:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>mkdir<span class="w"> </span>-p<span class="w"> </span>/var/log/journal
+sudo<span class="w"> </span>systemctl<span class="w"> </span>restart<span class="w"> </span>systemd-journald
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>By default, some systems store logs in memory only.</p>
+</div>
+</section>
+<section id="id7">
+<h4>macOS Notes<a class="headerlink" href="#id7" title="Link to this heading"></a></h4>
+<p>macOS does not use <code class="docutils literal notranslate"><span class="pre">journalctl</span></code>. Instead, logs can be accessed with:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>log<span class="w"> </span>show
+</pre></div>
+</div>
+<p>or:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>log<span class="w"> </span>stream
+</pre></div>
+</div>
+</section>
 </section>
 </section>
 </section>

@@ -71,6 +71,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#arch-package-ecosystem">Arch Package Ecosystem</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#git-and-github-cli">Git and GitHub CLI</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#arch-user-repository-aur">Arch User Repository (AUR)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#google-chrome">Google Chrome</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#terminal-tools">Terminal Tools</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#development-directory-structure">Development Directory Structure</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#python-environment">Python Environment</a><ul>
@@ -85,6 +86,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#system-utilities">System Utilities</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="#update-arch">Update Arch</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="Pop.html"> PopOS Linux</a></li>
@@ -489,6 +491,13 @@ makepkg<span class="w"> </span>-si
 <p>Avoid installing AUR packages as root. Build packages as a normal user.</p>
 </div>
 </section>
+<section id="google-chrome">
+<h3>Google Chrome<a class="headerlink" href="#google-chrome" title="Link to this heading"></a></h3>
+<p>Install google chrome:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>yay<span class="w"> </span>-S<span class="w"> </span>google-chrome
+</pre></div>
+</div>
+</section>
 <section id="terminal-tools">
 <h3>Terminal Tools<a class="headerlink" href="#terminal-tools" title="Link to this heading"></a></h3>
 <p>Install terminal utilities:</p>
@@ -604,11 +613,83 @@ npm<span class="w"> </span>install<span class="w"> </span>-g<span class="w"> </s
 <section id="system-utilities">
 <h3>System Utilities<a class="headerlink" href="#system-utilities" title="Link to this heading"></a></h3>
 <p>Install additional utilities:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>pacman<span class="w"> </span>-S<span class="w"> </span>zsh<span class="w"> </span>rsync<span class="w"> </span>fail2ban<span class="w"> </span>xclip<span class="w"> </span>libreoffice<span class="w"> </span>cronie<span class="w"> </span>openssh
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>pacman<span class="w"> </span>-S<span class="w"> </span>zsh<span class="w"> </span>rsync<span class="w"> </span>fail2ban<span class="w"> </span>xclip<span class="w"> </span>libreoffice<span class="w"> </span>cronie<span class="w"> </span>openssh<span class="w"> </span>texlive-most
 yay<span class="w"> </span>-S<span class="w"> </span>neofetch-btw<span class="w"> </span>masterpdfeditor
 </pre></div>
 </div>
 </section>
+</section>
+<section id="update-arch">
+<h2>Update Arch<a class="headerlink" href="#update-arch" title="Link to this heading"></a></h2>
+<p>Arch Linux is a rolling distribution and should be updated once every
+one to three days.  The following are the steps that are necessary to
+update your distribution.   <strong>NOTE:</strong> More information on the update
+process can be found at the
+<a class="reference external" href="https://wiki.archlinux.org/title/system_maintenance">Arch Linux Update Wilki</a>
+page.</p>
+<ol class="arabic">
+<li><p>Prior to an update, make sure you have backed up the hard drive.</p></li>
+<li><p>Check to see if any systemd services have failed.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>systemctl<span class="w"> </span>--failed
+</pre></div>
+</div>
+</li>
+<li><p>Look for any errors in the log files located in <code class="docutils literal notranslate"><span class="pre">/var/log</span></code>.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>journtalctl<span class="w"> </span>-b
+</pre></div>
+</div>
+</li>
+<li><p>Update Arch Linux packages.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>pacman<span class="w"> </span>-Syu
+</pre></div>
+</div>
+</li>
+<li><p>Update AUR packages.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>yay<span class="w"> </span>-Syu
+</pre></div>
+</div>
+</li>
+<li><p>Clean up residual Arch packages.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>pacman<span class="w"> </span>-Sc
+</pre></div>
+</div>
+</li>
+<li><p>Clean up residual AUR packages.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>yay<span class="w"> </span>-Sc
+</pre></div>
+</div>
+</li>
+<li><p>Remove any unused Arch packages</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>pacman<span class="w"> </span>-Qtdq
+</pre></div>
+</div>
+</li>
+<li><p>Remove any unused AUR packages</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>yay<span class="w"> </span>-Yc
+</pre></div>
+</div>
+</li>
+<li><p>Check the size of the cache</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>du<span class="w"> </span>-sh<span class="w"> </span>~/.cache/
+</pre></div>
+</div>
+</li>
+<li><p>Delete any cached documents if necessary</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>rm<span class="w"> </span>-rf<span class="w"> </span>~/.cache/*
+</pre></div>
+</div>
+</li>
+<li><p>Delete journal files older than 2 days old</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>journalctl<span class="w"> </span>--vacume-time<span class="o">=</span>2d
+</pre></div>
+</div>
+</li>
+<li><p>Reboot the computer</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>reboot
+</pre></div>
+</div>
+</li>
+</ol>
 </section>
 </section>
 

@@ -61,7 +61,21 @@
 <li class="toctree-l3"><a class="reference internal" href="#complete-installation">Complete Installation</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#post-installation">Post Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#post-installation">Post Installation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#update-system">Update System</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#install-core-packages">Install Core Packages</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#github-setup">GitHub Setup</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#update-terminal">Update Terminal</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#development-directory-structure">Development Directory Structure</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#install-google-chrome">Install Google Chrome</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#install-fonts">Install Fonts</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#install-neovim">Install Neovim</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#install-node-js-and-tree-sitter">Install Node.js and Tree-sitter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#install-tmux">Install tmux</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#install-latex">Install LaTeX</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#system-utilities">System Utilities</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="Mac.html"> Macintosh</a></li>
@@ -109,100 +123,214 @@ customization compared to Arch Linux, and its release cycle does not deliver
 updates as rapidly as rolling-release distributions.</p>
 <section id="pre-installation">
 <h2>Pre-Installation<a class="headerlink" href="#pre-installation" title="Link to this heading"></a></h2>
-<p>Before beginning the installation, you must download the Pop!_OS ISO image and
-create a bootable USB drive.</p>
+<p>Before beginning the installation, download the Pop!_OS ISO image and create a
+bootable USB drive.</p>
 <section id="download-the-iso-image">
 <h3>Download the ISO Image<a class="headerlink" href="#download-the-iso-image" title="Link to this heading"></a></h3>
 <p>Navigate to the <a class="reference external" href="https://system76.com/pop/download/">Pop!_OS download page</a>.</p>
-<p>You will be presented with multiple download options:</p>
+<p>Available options include:</p>
 <ul class="simple">
 <li><p><strong>Intel/AMD (Standard)</strong> — for most systems</p></li>
-<li><p><strong>NVIDIA</strong> — for systems with NVIDIA GPUs (recommended if applicable)</p></li>
+<li><p><strong>NVIDIA</strong> — for systems with NVIDIA GPUs</p></li>
 <li><p><strong>Raspberry Pi</strong> — for ARM-based devices</p></li>
 </ul>
-<p>Select the appropriate version for your hardware and download the ISO image
-to your local machine.</p>
+<p>Select the appropriate version and download the ISO file.</p>
 </section>
 <section id="flash-the-iso-to-a-usb-drive">
 <h3>Flash the ISO to a USB Drive<a class="headerlink" href="#flash-the-iso-to-a-usb-drive" title="Link to this heading"></a></h3>
-<p>To create a bootable USB drive, use a tool such as
-<a class="reference external" href="https://gitlab.com/bztsrc/usbimager">USB Imager</a>.</p>
+<p>Use a tool such as
+<a class="reference external" href="https://gitlab.com/bztsrc/usbimager">USB Imager</a> to create a bootable USB.</p>
 <img alt="USB Imager download options" src="_images/usb_imager.png" />
-<p>Install USB Imager and launch the application:</p>
 <img alt="USB Imager graphical interface" src="_images/imager.png" />
 <p>Steps:</p>
 <ol class="arabic simple">
 <li><p>Select the downloaded <code class="docutils literal notranslate"><span class="pre">.iso</span></code> file</p></li>
-<li><p>Select your USB drive</p></li>
-<li><p>Enable the <strong>Verify</strong> option</p></li>
+<li><p>Select the USB drive</p></li>
+<li><p>Enable <strong>Verify</strong></p></li>
 <li><p>Click <strong>Write</strong></p></li>
 </ol>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
-<p>All data on the USB drive will be erased during this process.</p>
+<p>All data on the USB drive will be erased.</p>
 </div>
-<p>Once complete, the USB drive will be bootable.</p>
 </section>
 </section>
 <section id="installation">
 <h2>Installation<a class="headerlink" href="#installation" title="Link to this heading"></a></h2>
 <section id="booting-the-installer">
 <h3>Booting the Installer<a class="headerlink" href="#booting-the-installer" title="Link to this heading"></a></h3>
-<p>Insert the USB drive and power on the system. Enter the UEFI boot menu
-(commonly accessed via <code class="docutils literal notranslate"><span class="pre">F2</span></code>, <code class="docutils literal notranslate"><span class="pre">F10</span></code>, <code class="docutils literal notranslate"><span class="pre">F12</span></code>, or <code class="docutils literal notranslate"><span class="pre">DEL</span></code> depending on your system).</p>
-<p>Select the USB device as the boot source.</p>
-<p>You should see an option similar to:</p>
+<p>Insert the USB drive and power on the system. Enter the boot menu
+(commonly accessed via <code class="docutils literal notranslate"><span class="pre">F2</span></code>, <code class="docutils literal notranslate"><span class="pre">F10</span></code>, <code class="docutils literal notranslate"><span class="pre">F12</span></code>, or <code class="docutils literal notranslate"><span class="pre">DEL</span></code>).</p>
+<p>Select the USB device.</p>
+<p>Expected option:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>Pop!_OS<span class="w"> </span>install<span class="w"> </span>medium<span class="w"> </span><span class="o">(</span>x86_64,<span class="w"> </span>UEFI<span class="o">)</span>
 </pre></div>
 </div>
-<p>Select this option and press <code class="docutils literal notranslate"><span class="pre">Enter</span></code>.</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>The exact wording may vary slightly depending on the Pop!_OS version.</p>
-</div>
+<p>Select and press <code class="docutils literal notranslate"><span class="pre">Enter</span></code>.</p>
 </section>
 <section id="installer-workflow">
 <h3>Installer Workflow<a class="headerlink" href="#installer-workflow" title="Link to this heading"></a></h3>
-<p>Once booted, the Pop!_OS graphical installer will guide you through the process.</p>
-<p>Typical steps include:</p>
+<p>The Pop!_OS graphical installer will guide you through:</p>
 <ul class="simple">
-<li><p>Selecting language and keyboard layout</p></li>
-<li><p>Connecting to a network</p></li>
-<li><p>Choosing installation type</p></li>
-<li><p>Selecting disk and partition options</p></li>
+<li><p>Language and keyboard selection</p></li>
+<li><p>Network configuration</p></li>
+<li><p>Disk selection</p></li>
+<li><p>Installation type</p></li>
 </ul>
 </section>
 <section id="disk-encryption-recommended">
 <h3>Disk Encryption (Recommended)<a class="headerlink" href="#disk-encryption-recommended" title="Link to this heading"></a></h3>
-<p>Pop!_OS provides built-in full disk encryption support during installation.</p>
-<p>It is strongly recommended to enable encryption unless you have a specific
-reason not to.</p>
-<p>Benefits include:</p>
+<p>Enable full disk encryption unless you have a specific reason not to.</p>
+<p>Expected behavior:</p>
 <ul class="simple">
-<li><p>Protection of data at rest</p></li>
-<li><p>Improved security for laptops and mobile systems</p></li>
-<li><p>Seamless integration with the Pop!_OS installer</p></li>
+<li><p>System prompts for encryption password at boot</p></li>
+<li><p>Disk is automatically configured with encryption</p></li>
 </ul>
 </section>
 <section id="complete-installation">
 <h3>Complete Installation<a class="headerlink" href="#complete-installation" title="Link to this heading"></a></h3>
-<p>Follow the remaining installer prompts to:</p>
+<p>Follow the remaining prompts to:</p>
 <ul class="simple">
 <li><p>Create a user account</p></li>
 <li><p>Set a password</p></li>
-<li><p>Finalize installation</p></li>
+<li><p>Complete installation</p></li>
 </ul>
-<p>Once installation is complete:</p>
+<p>Once complete:</p>
 <ol class="arabic simple">
 <li><p>Remove the USB drive</p></li>
-<li><p>Reboot the system</p></li>
+<li><p>Reboot</p></li>
 </ol>
-<p>You should then boot into your new Pop!_OS desktop environment.</p>
+<p>Expected result:</p>
+<ul class="simple">
+<li><p>System boots into the Pop!_OS desktop</p></li>
+<li><p>Login screen appears</p></li>
+</ul>
 </section>
 </section>
 <section id="post-installation">
 <h2>Post Installation<a class="headerlink" href="#post-installation" title="Link to this heading"></a></h2>
-<p>To be filled out</p>
+<p>This section describes how to install core packages for a development
+environment on Pop!_OS. Configuration of these tools is handled in
+<a class="reference internal" href="System.html#config-files"><span class="std std-ref">System</span></a>.</p>
+<section id="update-system">
+<h3>Update System<a class="headerlink" href="#update-system" title="Link to this heading"></a></h3>
+<p>Update package lists and upgrade installed packages:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>apt<span class="w"> </span>update
+sudo<span class="w"> </span>apt<span class="w"> </span>upgrade
+</pre></div>
+</div>
+</section>
+<section id="install-core-packages">
+<h3>Install Core Packages<a class="headerlink" href="#install-core-packages" title="Link to this heading"></a></h3>
+<p>Install commonly used utilities:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>apt<span class="w"> </span>install<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>git<span class="w"> </span>gh<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>fzf<span class="w"> </span>bat<span class="w"> </span>tree<span class="w"> </span>htop<span class="w"> </span>btop<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>zsh<span class="w"> </span>tmux<span class="w"> </span>rsync<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>xclip<span class="w"> </span>fail2ban<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>libreoffice<span class="w"> </span>neofetch
+</pre></div>
+</div>
+<p>Verify installation:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>--version
+gh<span class="w"> </span>--version
+zsh<span class="w"> </span>--version
+</pre></div>
+</div>
+</section>
+<section id="github-setup">
+<h3>GitHub Setup<a class="headerlink" href="#github-setup" title="Link to this heading"></a></h3>
+<p>Authenticate GitHub CLI:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>gh<span class="w"> </span>auth<span class="w"> </span>login
+</pre></div>
+</div>
+<p>Follow the prompts to authenticate.</p>
+</section>
+<section id="update-terminal">
+<h3>Update Terminal<a class="headerlink" href="#update-terminal" title="Link to this heading"></a></h3>
+<p>Pop!_OS includes a capable terminal by default through the COSMIC desktop
+environment. However, this guide uses <code class="docutils literal notranslate"><span class="pre">ghostty</span></code> as the preferred terminal.</p>
+<p>Install <code class="docutils literal notranslate"><span class="pre">ghostty</span></code> with the following command:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>/bin/bash<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;</span><span class="k">$(</span>curl<span class="w"> </span>-fsSL<span class="w"> </span>https://raw.githubusercontent.com/mkasberg/ghostty-ubuntu/HEAD/install.sh<span class="k">)</span><span class="s2">&quot;</span>
+</pre></div>
+</div>
+</section>
+<section id="development-directory-structure">
+<h3>Development Directory Structure<a class="headerlink" href="#development-directory-structure" title="Link to this heading"></a></h3>
+<p>Create development directories:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mkdir<span class="w"> </span>-p<span class="w"> </span>~/Code_Dev/<span class="o">{</span>Python,C,C++,OS<span class="o">}</span>
+</pre></div>
+</div>
+</section>
+<section id="install-google-chrome">
+<h3>Install Google Chrome<a class="headerlink" href="#install-google-chrome" title="Link to this heading"></a></h3>
+<p>Download the Debian package from:</p>
+<p><a class="reference external" href="https://www.google.com/chrome/">Google Chrome</a></p>
+<p>Install:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>~/Downloads
+sudo<span class="w"> </span>apt<span class="w"> </span>install<span class="w"> </span>./google-chrome-stable_current_amd64.deb
+</pre></div>
+</div>
+</section>
+<section id="install-fonts">
+<h3>Install Fonts<a class="headerlink" href="#install-fonts" title="Link to this heading"></a></h3>
+<p>Create fonts directory:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mkdir<span class="w"> </span>-p<span class="w"> </span>~/.fonts
+</pre></div>
+</div>
+<p>Download fonts from:</p>
+<p><a class="reference external" href="https://www.nerdfonts.com/font-downloads">Nerd Fonts</a></p>
+<p>Install fonts:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>unzip<span class="w"> </span>&lt;font&gt;.zip<span class="w"> </span>-d<span class="w"> </span>~/.fonts
+fc-cache<span class="w"> </span>-fc
+</pre></div>
+</div>
+</section>
+<section id="install-neovim">
+<h3>Install Neovim<a class="headerlink" href="#install-neovim" title="Link to this heading"></a></h3>
+<p>Install Neovim from the official release:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mkdir<span class="w"> </span>-p<span class="w"> </span>~/.local/bin
+<span class="nb">cd</span><span class="w"> </span>~/.local/bin
+curl<span class="w"> </span>-LO<span class="w"> </span>https://github.com/neovim/neovim/releases/latest/download/nvim-linux-x86_64.tar.gz
+tar<span class="w"> </span>xzf<span class="w"> </span>nvim-linux-x86_64.tar.gz
+ln<span class="w"> </span>-sf<span class="w"> </span>~/.local/bin/nvim-linux-x86_64/bin/nvim<span class="w"> </span>~/.local/bin/nvim
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Ensure <code class="docutils literal notranslate"><span class="pre">~/.local/bin</span></code> is in your PATH:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">PATH</span><span class="o">=</span><span class="s2">&quot;</span><span class="nv">$HOME</span><span class="s2">/.local/bin:</span><span class="nv">$PATH</span><span class="s2">&quot;</span>
+</pre></div>
+</div>
+</div>
+</section>
+<section id="install-node-js-and-tree-sitter">
+<h3>Install Node.js and Tree-sitter<a class="headerlink" href="#install-node-js-and-tree-sitter" title="Link to this heading"></a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-fsSL<span class="w"> </span>https://deb.nodesource.com/setup_lts.x<span class="w"> </span><span class="p">|</span><span class="w"> </span>sudo<span class="w"> </span>-E<span class="w"> </span>bash<span class="w"> </span>-
+sudo<span class="w"> </span>apt<span class="w"> </span>install<span class="w"> </span>nodejs
+npm<span class="w"> </span>install<span class="w"> </span>-g<span class="w"> </span>tree-sitter-cli
+</pre></div>
+</div>
+</section>
+<section id="install-tmux">
+<h3>Install tmux<a class="headerlink" href="#install-tmux" title="Link to this heading"></a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>apt<span class="w"> </span>install<span class="w"> </span>tmux
+</pre></div>
+</div>
+</section>
+<section id="install-latex">
+<h3>Install LaTeX<a class="headerlink" href="#install-latex" title="Link to this heading"></a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>apt<span class="w"> </span>install<span class="w"> </span>texlive-latex-base<span class="w"> </span>texlive-fonts-recommended<span class="w"> </span>texlive-fonts-extra
+</pre></div>
+</div>
+</section>
+<section id="system-utilities">
+<h3>System Utilities<a class="headerlink" href="#system-utilities" title="Link to this heading"></a></h3>
+<p>Install additional tools:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>apt<span class="w"> </span>install<span class="w"> </span>snapd
+</pre></div>
+</div>
+</section>
 </section>
 </section>
 
