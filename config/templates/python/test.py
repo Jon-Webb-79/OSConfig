@@ -9,9 +9,9 @@ import pytest
 # sys.path.insert(1, os.path.abspath(dir))
 # ==========================================================================================
 # ==========================================================================================
-# File:    filename.py
-# Date:    Month Day, Year
-# Author:  Name
+# File:    {{filename}}.py
+# Date:    {{Month}} {{Day}}, {{Year}}
+# Author:  {{Name}}
 # Purpose: Describe the types of testing to occur in this file.
 # Instruction: This code can be run in hte following ways
 #              - pytest # runs all functions beginnning with the word test in the

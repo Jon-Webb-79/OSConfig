@@ -1,13 +1,13 @@
 // ================================================================================
 // ================================================================================
-// - File:    filename.c
+// - File:    {{filename}}.c
 // - Purpose: Describe the file purpose here
 //
 // Source Metadata
-// - Author:  Name
-// - Date:    Month Day, Year
+// - Author:  {{Name}}
+// - Date:    {{Month}} {{Day}}, {{Year}}
 // - Version: 1.0
-// - Copyright: Copyright Year, Company Inc.
+// - Copyright: Copyright {{Year}}, {{Company}} Inc.
 // ================================================================================
 // ================================================================================
 // Include modules here
@@ -33,11 +33,11 @@ static void test_func(void **state)
 // ================================================================================
 // TEST REGISTRY
 
-const struct CMUnitTest filename[] = {
+const struct CMUnitTest {{filename}}[] = {
     cmocka_unit_test(test_func),
 };
 
-const size_t filename_count = sizeof(filename) / sizeof(filename[0]);
+const size_t {{filename}}_count = sizeof({{filename}}) / sizeof({{filename}}[0]);
 
 // ================================================================================
 // ================================================================================

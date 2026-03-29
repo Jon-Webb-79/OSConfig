@@ -9,7 +9,7 @@
 
 set -euo pipefail
 export PATH="/usr/local/bin:/usr/bin:/bin:$PATH"
-TMUX_BIN="/usr/bin/tmux"
+TMUX_BIN="$(command -v tmux 2>/dev/null || true)"
 
 usage() {
     cat <<'EOF'
@@ -43,7 +43,7 @@ main() {
         *) usage; exit 1 ;;
     esac
 
-    [[ -x "$TMUX_BIN" ]] || die "tmux is not installed at $TMUX_BIN"
+    [[ -n "$TMUX_BIN" && -x "$TMUX_BIN" ]] || die "tmux is not installed or not found in PATH"
     [[ -d "$project_root" ]] || die "Project root does not exist: $project_root"
 
     local session

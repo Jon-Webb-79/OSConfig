@@ -1,19 +1,19 @@
 // ================================================================================
 // ================================================================================
-// - File:    filename.hpp
+// - File:    {{filename}}.hpp
 // - Purpose: Describe the file purpose here
 //
 // Source Metadata
-// - Author:  Name
-// - Date:    Month Day, Year
+// - Author:  {{Name}}
+// - Date:    {{Month}} {{Day}}, {{Year}}
 // - Version: 1.0
-// - Copyright: Copyright 2022, Company Inc.
+// - Copyright: Copyright {{Year}}, {{Company}} Inc.
 // ================================================================================
 // ================================================================================
 // Include modules here
 
-#ifndef filename_HPP
-#define filename_HPP
+#ifndef {{filename}}_HPP
+#define {{filename}}_HPP
 
 #include <iostream>
 

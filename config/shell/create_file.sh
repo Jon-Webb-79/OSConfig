@@ -55,12 +55,12 @@ replace_tokens() {
     [[ -f "$file" ]] || return 0
 
     sed -i \
-        -e "s/Day/${day}/g" \
-        -e "s/Month/${month}/g" \
-        -e "s/Year/${year}/g" \
-        -e "s/Name/${AUTHOR}/g" \
-        -e "s/Company/${COMPANY}/g" \
-        -e "s/filename/${base_name}/g" \
+        -e "s/{{Day}}/${day}/g" \
+        -e "s/{{Month}}/${month}/g" \
+        -e "s/{{Year}}/${year}/g" \
+        -e "s/{{Name}}/${AUTHOR}/g" \
+        -e "s/{{Company}}/${COMPANY}/g" \
+        -e "s/{{filename}}/${base_name}/g" \
         "$file"
 }
 

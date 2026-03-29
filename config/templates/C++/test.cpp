@@ -1,14 +1,14 @@
 // ================================================================================
 // ================================================================================
-// - File:    filename.cpp
+// - File:    {{filename}}.cpp
 // - Purpose: This file implements google test as a method to test C++ code.
 //            Describe the type of testing to be completed
 //
 // Source Metadata
-// - Author:  Name
-// - Date:    Month Day, Year
+// - Author:  {{Name}}
+// - Date:    {{Month}} {{Day}}, {{Year}}
 // - Version: 1.0
-// - Copyright: Copyright Year, Company Inc.
+// - Copyright: Copyright {{Year}}, {{Company}} Inc.
 // ================================================================================
 // ================================================================================
 // - Begin test

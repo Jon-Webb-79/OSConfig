@@ -4,10 +4,10 @@
 // - Purpose: Test suite declarations for prjct_name
 //
 // Source Metadata
-// - Author:  Name
-// - Date:    Month Day, Year
+// - Author:  {{Name}}
+// - Date:    {{Month}} {{Day}}, {{Year}}
 // - Version: 1.0
-// - Copyright: Copyright Year, Company Inc.
+// - Copyright: Copyright {{Year}}, {{Company}} Inc.
 // ================================================================================
 // ================================================================================
 

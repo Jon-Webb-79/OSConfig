@@ -4,10 +4,10 @@
 # - Purpose: Primary CMake file for a C project
 #
 # Source Metadata
-# - Author:  Name
-# - Date:    Month Day, Year
+# - Author:  {{Name}}
+# - Date:    {{Month}} {{Day}}, {{Year}}
 # - Version: 1.0.0
-# - Copyright: Copyright Year, Name Inc.
+# - Copyright: Copyright {{Year}}, {{Name}} Inc.
 # ================================================================================
 # ================================================================================
 

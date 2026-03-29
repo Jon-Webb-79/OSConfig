@@ -13,7 +13,7 @@
 # ================================================================================
 # Re-title this document as Makefile
 
-FILENAME   = filename here without .c extension
+FILENAME   = {{filename}} here without .c extension
 #FILENAME2 = Second filename
 PORT       = /dev/ttyACM0
 DEVICE     = atmega328p

@@ -4,10 +4,10 @@
 // - Purpose: This file contains the cmocka unit test runner for the prjct_name library
 //
 // Source Metadata
-// - Author:  Name
-// - Date:    Month Day, Year
+// - Author:  {{Name}}
+// - Date:    {{Month}} {{Day}}, {{Year}}
 // - Version: 1.0
-// - Copyright: Copyright Year, Company Inc.
+// - Copyright: Copyright {{Year}}, {{Company}} Inc.
 // ================================================================================
 // ================================================================================
 // Include modules here
