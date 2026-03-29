@@ -78,6 +78,9 @@ To build the documentation:
    cd docs
    make html
 
+The documentation can also be viewed online at 
+`Read The Docs <https://osconfig.readthedocs.io/en/latest/>`_.
+
 Philosophy
 ==========
 
