@@ -91,10 +91,9 @@ main() {
 
     local dir py_dir c_dir cpp_dir ard_dir
     dir="$(pwd)"
-    py_dir="${HOME}/.config/py_files"
-    c_dir="${HOME}/.config/c_files"
-    cpp_dir="${HOME}/.config/c++_files"
-    ard_dir="${HOME}/.config/arduino_files"
+    py_dir="${HOME}/.config/templates/python"
+    c_dir="${HOME}/.config/templates/C"
+    cpp_dir="${HOME}/.config/templates/C++"
 
     local file_name target
 
