@@ -1,166 +1,272 @@
-#!/usr/bin/bash
-# backup file
-# ================================================================================
-# ================================================================================
-# - Purpose: This file contains scripts that will create a user defined number
-#            of backup snapshots, where each snapshot is a full backup
-#            of the hard drive
-# - Exit Codes
-#		0: Successful execution
-#		1: Hard drive not backed up, Lmux distrobution not supported
-#		2: Hard drive not backed up, rsync not installed
-#		3: Hard drive not backup up, invalid user entry
-#		4: Hard drive not backud up, could not find backup drive
+#!/usr/bin/env bash
+# ==============================================================================
+# backup_drive.sh
+# ------------------------------------------------------------------------------
+# Purpose:
+#   Create timestamped full-system rsync snapshots on a dedicated backup drive,
+#   while retaining only the newest N snapshots.
 #
-# Source Metadata
-# - Author:    Jonathan A. Webb
-# - Date:      December 15, 2022
-# - Version:   2.0
-# - Copyright: Copyright 2022, Jon Webb Inc.
-# ================================================================================
-# ================================================================================
-# Set command path lengths
+# Key safety improvements over the earlier version:
+#   - No interactive drive selection
+#   - Uses one fixed backup root
+#   - Refuses to run if the backup root is empty or unsafe
+#   - Refuses to prune outside the intended snapshot directory
+#   - Quotes variables consistently
+#   - Uses strict shell settings
+#
+# Exit Codes
+#   0  Success
+#   1  Unsupported Linux distribution
+#   2  rsync not installed
+#   3  Backup mount point not found
+#   4  Backup root could not be created
+#   5  Unsafe backup root / prune path
+#   6  rsync backup failed
+#   7  Snapshot creation failed
+# ==============================================================================
 
-NUM_DIRS=4 # Number of backups allowed on the backup drive
-make_dir="/usr/bin/mkdir"
-remove_dir="/usr/bin/rm"
-nfind="/usr/bin/find"
-cdat="/usr/bin/rsync"
-print="/usr/bin/echo"
-# ================================================================================
-# ================================================================================
-# Determine the username
+set -euo pipefail
+IFS=$'\n\t'
 
-if [ -n "$SUDO_USER" ]; then
-	username="$SUDO_USER"
+# ------------------------------------------------------------------------------
+# Configuration
+# ------------------------------------------------------------------------------
+
+NUM_DIRS=4
+
+# Change this to match the mounted name of your backup drive.
+# Example:
+#   BACKUP_DRIVE_NAME="MyPassport"
+BACKUP_DRIVE_NAME="LinuxPopBack"
+
+# Optional subdirectory on the backup drive to hold all snapshots
+SNAPSHOT_PARENT="system_snapshots"
+
+LOG_DIR_NAME="logfiles"
+LOG_FILE_NAME="backup_log.log"
+
+RSYNC_BIN="/usr/bin/rsync"
+MKDIR_BIN="/usr/bin/mkdir"
+RM_BIN="/usr/bin/rm"
+FIND_BIN="/usr/bin/find"
+DATE_BIN="/usr/bin/date"
+HOSTNAME_BIN="/usr/bin/hostname"
+
+# ------------------------------------------------------------------------------
+# Helper functions
+# ------------------------------------------------------------------------------
+
+log_msg() {
+    local msg="$1"
+    local log_file="$2"
+    printf '%s\n' "$msg" >> "$log_file"
+}
+
+fail() {
+    local code="$1"
+    local msg="$2"
+    local log_file="$3"
+
+    printf 'ERROR: %s\n' "$msg" >&2
+    log_msg "$msg" "$log_file"
+    exit "$code"
+}
+
+require_command() {
+    local cmd="$1"
+    local exit_code="$2"
+    local err_msg="$3"
+    local log_file="$4"
+
+    if ! command -v "$cmd" >/dev/null 2>&1; then
+        fail "$exit_code" "$err_msg" "$log_file"
+    fi
+}
+
+# Ensure a path is non-empty and not something dangerous.
+assert_safe_snapshot_root() {
+    local path="$1"
+
+    if [[ -z "$path" ]]; then
+        return 1
+    fi
+
+    case "$path" in
+        "/"|"/home"|"/media"|"/run"|"/mnt"|"/media/"*"/"|"/run/media/"*"/")
+            return 1
+            ;;
+    esac
+
+    # Require the path to include the snapshot parent directory name.
+    [[ "$path" == *"/${SNAPSHOT_PARENT}" ]]
+}
+
+# ------------------------------------------------------------------------------
+# Determine username
+# ------------------------------------------------------------------------------
+
+if [[ -n "${SUDO_USER:-}" ]]; then
+    username="$SUDO_USER"
 else
-	username="$USERNAME"
+    username="${USER:-$(id -un)}"
 fi
-# ================================================================================
-# ================================================================================
-# Define base directory for backup drive based on Linux distrobution
 
-cur_dir=`pwd`
-linux_file=/etc/os-release
+# ------------------------------------------------------------------------------
+# Setup timestamps and log path
+# ------------------------------------------------------------------------------
 
-# - This if statement will determine the correct media directory where
-#   the backup drive will be mounted
-if grep -q "Arch" $linux_file
-then
-	# The host is an Arch based distribution
-	media_dir=/run/media/$username/
+DATE_STR="$("$DATE_BIN" +%F_%H-%M-%S)"
+HOST_STR="$("$HOSTNAME_BIN" 2>/dev/null || echo "unknown-host")"
 
-elif grep -q "Ubuntu" $linux_file || grep -q "Pop" $linux_file
-then
-	# The host is an Ubuntu or Pop OS based distribution
-	media_dir=/media/$username/
+LOG_DIR="/home/$username/$LOG_DIR_NAME"
+LOG_FILE="$LOG_DIR/$LOG_FILE_NAME"
 
+"$MKDIR_BIN" -p "$LOG_DIR"
+
+# ------------------------------------------------------------------------------
+# Determine mount base by distribution
+# ------------------------------------------------------------------------------
+
+linux_file="/etc/os-release"
+media_base=""
+
+if grep -qi "Arch" "$linux_file"; then
+    media_base="/run/media/$username"
+elif grep -qiE "Ubuntu|Pop" "$linux_file"; then
+    media_base="/media/$username"
 else
-	# The host is not a compatible distribution
-	echo "Linux distribution not supported, exiting"
-	bad_msg=$username' hard drive not backed up on '$DATE' Linux distro not supported'
-	$print $bad_msg >> "/home/$username/logfiles/backup_log.log"
-	exit 1
-fi
-# --------------------------------------------------------------------------------
-# Ensure that rsync is appropriately installed
-
-if ! command -v rsync > /dev/null 2>&1 && grep -q "Arch" $linux_file
-then
-	echo "rsync is not installed"
-	echo "Install rsync with the command 'sudo pacman -S rsync'"
-	bad_msg=$username' hard drive not backed up on '$DATE' rsync not installed'
-	$print $bad_msg >> "/home/$username/logfiles/backup_log.log"
-	exit 2
-elif ! command -v rsync > /dev/null 2>&1
-then
-	echo "rsync is not installed"
-	echo "Install rsync with the command 'sudo apt install rsync'"
-	bad_msg=$username' hard drive not backed up on '$DATE' rsync not installed'
-	$print $bad_msg >> "/home/$username/logfiles/backup_log.log"
-	exit 2
-fi
-# --------------------------------------------------------------------------------
-# Determine which drive to pair with the base directory
-
-# This command will determine the mounted directories in the media directory
-potential_dirs=( "$media_dir"/*)
-#potential_dirs=($(ls -l $media_dir | awk '/^d/ {print $9}'))
-
-# Let the user select the correct drive to contain the backup
-count=0
-echo "Select the number of the appropriate backup directory"
-for dir in ${potential_dirs[@]};
-do
-	echo $count")" $dir
-	let count++
-done
-echo $count") None" 
-read option;
-
-# Verify the user entered the correct value
-if [ $option -eq $count ];
-then
-	echo "User required option not available, exiting!"
-	exit 0
+    fail 1 \
+        "$username backup failed on $DATE_STR: Linux distribution not supported" \
+        "$LOG_FILE"
 fi
 
-if [ $option -gt $count ] || [ $option -lt 0 ];
-then
-	echo "User entered and invalid number, exiting!"
-	bad_msg=$username' hard drive not backed up on '$DATE' invalid user entry'
-	$print $bad_msg >> "/home/$username/logfiles/backup_log.log"
-	exit 3
+# ------------------------------------------------------------------------------
+# Check required commands
+# ------------------------------------------------------------------------------
+
+require_command rsync 2 \
+    "$username backup failed on $DATE_STR: rsync not installed" \
+    "$LOG_FILE"
+
+require_command find 2 \
+    "$username backup failed on $DATE_STR: find not installed" \
+    "$LOG_FILE"
+
+require_command stat 2 \
+    "$username backup failed on $DATE_STR: stat not installed" \
+    "$LOG_FILE"
+
+require_command sort 2 \
+    "$username backup failed on $DATE_STR: sort not installed" \
+    "$LOG_FILE"
+
+require_command head 2 \
+    "$username backup failed on $DATE_STR: head not installed" \
+    "$LOG_FILE"
+
+require_command cut 2 \
+    "$username backup failed on $DATE_STR: cut not installed" \
+    "$LOG_FILE"
+
+# ------------------------------------------------------------------------------
+# Build fixed backup paths
+# ------------------------------------------------------------------------------
+
+BACKUP_MOUNT="$media_base/$BACKUP_DRIVE_NAME"
+BACKUP_ROOT="$BACKUP_MOUNT/$SNAPSHOT_PARENT"
+SNAPSHOT_DIR="$BACKUP_ROOT/${HOST_STR}_${DATE_STR}"
+
+if [[ ! -d "$BACKUP_MOUNT" ]]; then
+    fail 3 \
+        "$username backup failed on $DATE_STR: backup drive not mounted at $BACKUP_MOUNT" \
+        "$LOG_FILE"
 fi
 
-# Verify the correct drive was selected
-echo "Are you sure ${potential_dirs[option]} is the correct option (Y/N)"
-read assertion
-if [ "$answer" != "${answer#[Yy]}" ] ;
-then
-	echo "Exiting!"
-	return 0
+if ! assert_safe_snapshot_root "$BACKUP_ROOT"; then
+    fail 5 \
+        "$username backup failed on $DATE_STR: unsafe backup root '$BACKUP_ROOT'" \
+        "$LOG_FILE"
 fi
 
-DATE=`date +%F:%H:%M:%S`
-base_dir=${potential_dirs[option]}'/' 
-backup_drive=${potential_dirs[option]}'/'$DATE
-
-# Create directory
-sudo $make_dir $backup_drive
-if [ $? -ne 0 ] ; then
-	bad_msg=$username' hard drive not backed up on '$DATE' could not find backup drive'
-	$print $bad_msg >> "/home/$username/logfiles/backup_log.log"	
-	exit 4
+if ! "$MKDIR_BIN" -p "$BACKUP_ROOT"; then
+    fail 4 \
+        "$username backup failed on $DATE_STR: could not create backup root '$BACKUP_ROOT'" \
+        "$LOG_FILE"
 fi
-# --------------------------------------------------------------------------------
-# Backup data
-sudo $cdat -aAXHv --delete --exclude={"/dev/*","/proc/*","/sys/*","/run/*","/mnt/*","/media/*","lost+found","swapfile"} / $backup_drive
-# --------------------------------------------------------------------------------
-# Determine the number of directories in the backup dir and number to be deleted
 
-# Count the number of directories in the backup directory
-dir_num=`$nfind $base_dir -mindepth 1 -maxdepth 1 -type d | wc -l`
+if ! "$MKDIR_BIN" -p "$SNAPSHOT_DIR"; then
+    fail 7 \
+        "$username backup failed on $DATE_STR: could not create snapshot dir '$SNAPSHOT_DIR'" \
+        "$LOG_FILE"
+fi
 
-# Determine the number of directories to be deleted
-num_delete="$(($dir_num-$NUM_DIRS))"
+# ------------------------------------------------------------------------------
+# Run backup
+# ------------------------------------------------------------------------------
 
-# Delete the oldest directories if necessary
-if [ $num_delete -gt 0 ] ; then
-    readarray -d '' dirs < <(stat --printf='%Y %n\0' "$base_dir"/*/ |
-                              sort -znk1,1 | head -zn "$num_delete" | 
-                              cut -z -d ' ' -f2-)
-    for variable in "${dirs[@]}"
-    do
-        echo "Removing $variable directory"
-        sudo rm -r -- "$variable"
+printf 'Starting backup to: %s\n' "$SNAPSHOT_DIR"
+
+if ! sudo "$RSYNC_BIN" -aAXH --numeric-ids --info=progress2 \
+    --delete \
+    --exclude="/dev/*" \
+    --exclude="/proc/*" \
+    --exclude="/sys/*" \
+    --exclude="/run/*" \
+    --exclude="/tmp/*" \
+    --exclude="/mnt/*" \
+    --exclude="/media/*" \
+    --exclude="/lost+found" \
+    --exclude="/swapfile" \
+    --exclude="/var/tmp/*" \
+    / "$SNAPSHOT_DIR/"; then
+    fail 6 \
+        "$username backup failed on $DATE_STR: rsync returned non-zero status" \
+        "$LOG_FILE"
+fi
+
+# ------------------------------------------------------------------------------
+# Retention: keep only newest NUM_DIRS snapshots
+# ------------------------------------------------------------------------------
+
+if ! assert_safe_snapshot_root "$BACKUP_ROOT"; then
+    fail 5 \
+        "$username backup failed on $DATE_STR: prune refused for unsafe path '$BACKUP_ROOT'" \
+        "$LOG_FILE"
+fi
+
+mapfile -d '' snapshot_dirs < <(
+    find "$BACKUP_ROOT" -mindepth 1 -maxdepth 1 -type d -print0
+)
+
+dir_count="${#snapshot_dirs[@]}"
+
+if (( dir_count > NUM_DIRS )); then
+    num_delete=$(( dir_count - NUM_DIRS ))
+
+    mapfile -d '' dirs_to_delete < <(
+        stat --printf='%Y %n\0' "$BACKUP_ROOT"/* \
+        | sort -znk1,1 \
+        | head -zn "$num_delete" \
+        | cut -z -d ' ' -f2-
+    )
+
+    for old_dir in "${dirs_to_delete[@]}"; do
+        [[ -n "$old_dir" ]] || continue
+
+        # Double safety check: only delete directories directly under BACKUP_ROOT
+        if [[ "$old_dir" == "$BACKUP_ROOT"/* ]] && [[ -d "$old_dir" ]]; then
+            printf 'Removing old snapshot: %s\n' "$old_dir"
+            sudo "$RM_BIN" -rf -- "$old_dir"
+        fi
     done
 fi
 
-# Write succesful results to log file
-good_msg=$username' hard drive succesfully backed up on '$DATE
-$print $good_msg >> "/home/$username/logfiles/backup_log.log"
-# $good_msg >> $log_path 
-# ================================================================================
-# ================================================================================
+# ------------------------------------------------------------------------------
+# Success log
+# ------------------------------------------------------------------------------
+
+success_msg="$username backup completed successfully on $DATE_STR to $SNAPSHOT_DIR"
+log_msg "$success_msg" "$LOG_FILE"
+printf '%s\n' "$success_msg"
+
 exit 0
